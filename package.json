@@ -1,0 +1,37 @@
+{
+  "name": "ds-guardian",
+  "version": "0.0.0",
+  "description": "Internal DS web app to review Member submitted content",
+  "main": "client.js",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:dev": "webpack-dev-server --inline --content-base dist/ --history-api-fallback",
+    "start:prod": "npm run build && node server.bundle.js",
+    "build:client": "webpack",
+    "build:server": "webpack --config webpack.server.config.js",
+    "build": "npm run build:client && npm run build:server"
+  },
+  "engines": {
+    "node": "4.1.1"
+  },
+  "author": "DoSomething.org",
+  "license": "MIT",
+  "dependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "compression": "^1.6.1",
+    "express": "^4.13.4",
+    "http-server": "^0.8.5",
+    "if-env": "^1.0.0",
+    "react": "^0.14.7",
+    "react-addons-css-transition-group": "0.14.0",
+    "react-dom": "^0.14.7",
+    "react-router": "^2.0.1",
+    "react-router-active-component": "^4.0.0-rc.0",
+    "serve-favicon": "^2.3.0",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1"
+  }
+}

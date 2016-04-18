@@ -1,0 +1,49 @@
+body {
+  padding-top: 50px;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a:hover {
+  text-decoration: none;
+}
+.gallery .caption {
+  height: 40px;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+}
+.carousel {
+  background: #333;
+}
+.carousel-caption {
+  text-shadow: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 120%;
+}
+.glyphicon-ok {
+  color: green;
+}
+.glyphicon-heart {
+  color: #FF69B4;
+}
+.glyphicon-remove {
+  color: #ccc;
+}
+.glyphicon-trash {
+  color: red;
+}
+.entry-enter {
+    transition: all 1s;
+    opacity: 0;
+}
+.entry-enter.entry-enter-active {
+    opacity: 1;
+}
+.entry-leave {
+    transition: all 1s;
+    opacity: 1;
+}
+.entry-leave.entry-leave-active {
+    opacity: 0;
+}
+
