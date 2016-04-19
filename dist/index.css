@@ -46,4 +46,9 @@ a:hover {
 .entry-leave.entry-leave-active {
     opacity: 0;
 }
-
+#loading-view {
+  margin-top: 20px;
+}
+.progress-bar {
+  width: 100%;
+}
