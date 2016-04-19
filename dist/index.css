@@ -2,11 +2,22 @@ body {
   padding-top: 50px;
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+h1, h2 {
+  font-size: 90%:;
+}
 a:hover {
   text-decoration: none;
 }
 .gallery .caption {
   height: 40px;
+}
+.reportback-item {
+  background: white;
+  /* hardcoded to image width for now */
+  width: 410px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  padding: 4px;
 }
 .avatar {
   width: 80px;
@@ -20,12 +31,16 @@ a:hover {
   background-color: rgba(0, 0, 0, 0.5);
   font-size: 120%;
 }
+.list-group-item span.key {
+  margin-right: 0.25em;
+}
 .glyphicon-ok {
   color: green;
 }
 .glyphicon-heart {
   color: #FF69B4;
 }
+.glyphicon-circle-arrow-left,
 .glyphicon-remove {
   color: #ccc;
 }
@@ -33,17 +48,22 @@ a:hover {
   color: red;
 }
 .entry-enter {
-    transition: all 1s;
-    opacity: 0;
+  transition: all 1s;
+  opacity: 0;
 }
 .entry-enter.entry-enter-active {
-    opacity: 1;
+  opacity: 1;
 }
 .entry-leave {
-    transition: all 1s;
-    opacity: 1;
+  transition: all 1s;
+  opacity: 1;
 }
 .entry-leave.entry-leave-active {
-    opacity: 0;
+  opacity: 0;
 }
-
+#loading-view {
+  margin-top: 20px;
+}
+.progress-bar {
+  width: 100%;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import LoadingView from './LoadingView';
 import NavLink from './NavLink';
 import SearchForm from './SearchForm';
 
@@ -12,12 +13,14 @@ export default React.createClass({
       .then((json) => {
         this.setState({
           data: json.data,
+          loaded: true,
         });
       });
   },
   getInitialState: function() {
     return {
-      data: []
+      data: [],
+      loaded: false,
     };
   },
   componentDidMount: function() {
@@ -29,6 +32,9 @@ export default React.createClass({
     // If a child exists, this is a single Campaign view:
     if (this.props.children) {
       return this.props.children;
+    }
+    if (!this.state.loaded) {
+      return <LoadingView title="Loading campaigns..." />;
     }
     // Otherwise return list of Campaigns.
     return (
@@ -77,7 +83,7 @@ var CampaignsTable = React.createClass({
 
 var CampaignsListItem = React.createClass({
   render: function() {
-    var url = '/campaigns/' +  this.props.campaign.id.toString();
+    var url = '/campaigns/' +  this.props.campaign.id.toString() + '/inbox';
     return (
       <NavLink className="list-group-item" to={url}>
         <h3>{this.props.campaign.title}</h3>

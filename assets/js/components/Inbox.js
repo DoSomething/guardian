@@ -1,8 +1,13 @@
 import React from 'react';
+import Firebase from 'firebase';
+import ReactFireMixin from 'reactfire';
 import CSSTransitionGroup from 'react-addons-css-transition-group';
 
-import NavLink from './NavLink'
+import Helpers from '../utils/Helpers';
+import LoadingView from './LoadingView';
+import NavLink from './NavLink';
 import Reportback from './Reportback';
+import ReportbackList from './ReportbackList';
 
 export default React.createClass({
   bumpIndex: function(increment) {
@@ -11,8 +16,13 @@ export default React.createClass({
       selectedIndex: newIndex,
     });
   },
-  componentDidMount: function() {
+  componentWillMount: function() {
     this.fetchCampaign(this.props.params.campaignId);
+    this.firebaseRef = new Firebase(Helpers.firebaseUrl());
+    this.bindAsObject(this.firebaseRef.child('reportbacks'), "reportbacks");
+    this.campaignReportbackUrl = 'campaigns/' + this.props.params.campaignId + '/reportbacks/';
+    this.bindAsObject(this.firebaseRef.child(this.campaignReportbackUrl + '/pending'), 'inbox');
+    this.bindAsObject(this.firebaseRef.child(this.campaignReportbackUrl + '/reviewed'), 'reviewed');
   },
   fetchCampaign: function(campaignId) {
     var url = 'https://www.dosomething.org/api/v1/campaigns/' + campaignId;
@@ -25,87 +35,109 @@ export default React.createClass({
           campaign: json.data,
           campaignLoaded: true,
         });
-        this.fetchInbox(campaignId);
       })
   },
-  fetchInbox: function(campaignId) {
-    var url = 'https://www.dosomething.org/api/v1/reportbacks?campaigns=' + campaignId + '&load_user=true';
-    fetch(url)
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        var reportbacks = json.data;
-        // Hardcode all item statuses to null for testing postReview / state.
-        for (var i=0; i < reportbacks.length; i++) {
-          for (var j=0; j < reportbacks[i].reportback_items.data.length; j++) {
-            reportbacks[i].reportback_items.data[j].status = null;
-          }
-        }
-        this.setState({
-          inbox: json.data,
-          inboxLoaded: true,
-        });
-      })
+  handleGenerateReportbackSubmit: function(e) {
+    e.preventDefault();
+    var timestamp = new Date().getTime();
+    var status = 'pending';
+    var newReportbackRef = this.firebaseRefs.reportbacks.push({
+      // @todo Campaign helper function should cast id to integer properly
+      campaign: Number(this.state.campaign.id),
+      submitted_at: timestamp,
+      quantity: Math.round(Math.random()*4000) + 1,
+      status: status,
+      user: '555cc065469c6430068b6dfb'
+    });
+    var reportbackId = newReportbackRef.key();
+    this.firebaseRefs.inbox.child(reportbackId).set(true);
   },
   getInitialState: function() {
     return {
       campaign: null,
       campaignLoaded: false,
       inbox: [],
-      inboxLoaded: false,
+      selectedReportbackId: null,
+      reviewed: [],
       selectedIndex: 0,
     };
   },
-  postReview: function(reportbackItemStatus, timestamp, reportbackItemIndex) {
-    var selectedReportback = this.state.inbox[this.state.selectedIndex];
-    selectedReportback.reportback_items.data[reportbackItemIndex].status = reportbackItemStatus;
-    selectedReportback.reportback_items.data[reportbackItemIndex].reviewed_at = timestamp;
-    this.state.inbox[this.state.selectedIndex] = selectedReportback;
+  mixins: [ReactFireMixin],
+  postReview: function(status) {
+    var reportbackId = this.state.selectedReportbackId;
+    this.firebaseRefs.reportbacks.child(reportbackId).update({
+      reviewed_at: new Date().getTime(),
+      status: status
+    });
+    this.firebaseRefs.inbox.child(reportbackId).set(null);
+    this.firebaseRefs.reviewed.child(reportbackId).set(true);
   },
   render: function() {
-    var content, reportback;
-    if (!this.state.campaignLoaded || !this.state.inboxLoaded) {
-      return <div>Loading</div>;
-    }
-    else if (this.state.inbox.length < 1) {
-      content = <div>Inbox zero. Sweet!</div>
+    var content, controls = null
+    var inboxCount = 0;
+    var inboxIds = [];
+    var reviewedIds = Object.keys(this.state.reviewed).reverse();
+    this.firebaseRefs.inbox.once("value", function(snapshot) {
+      inboxCount = snapshot.numChildren();
+    }); 
+    if (!this.state.campaignLoaded || !this.state.reportbacks) {
+      return <LoadingView title="Loading inbox..." />;
     }
     else {
-      reportback = this.state.inbox[this.state.selectedIndex];
-      content = (
-        <CSSTransitionGroup
-          component="div"
-          transitionName="entry"
-          transitionLeaveTimeout={1000}
-          transitionEnterTimeout={1000}
-        >
+      if (inboxCount == 0) {
+        content = null;
+      }
+      else {
+        inboxIds = Object.keys(this.state.inbox);
+        this.state.selectedReportbackId = inboxIds[this.state.selectedIndex];
+        content = (
           <Reportback
-            campaign={reportback.campaign}
-            key={reportback.id} 
-            reportback={reportback}
+            key={this.state.selectedReportbackId}
+            campaign={this.state.campaign}
+            reportbackId={this.state.selectedReportbackId}
             postReview={this.postReview}
           />
-        </CSSTransitionGroup>
-      );
+        );  
+        controls = (
+          <Controls 
+            bumpIndex={this.bumpIndex}
+            inboxCount={inboxCount}
+            inboxIndex={this.state.selectedIndex}
+          />
+        );      
+      }
     }
     var campaignUrl = '/campaigns/' + this.state.campaign.id.toString();
     return (
       <div className="container">
         <div className="page-header">
+          <form className="pull-right" onSubmit={this.handleGenerateReportbackSubmit}>
+            <button className="btn btn-default pull-right"  role="button">
+              <span className="glyphicon glyphicon-flash" />
+            </button>
+          </form>
           <h1>
             <NavLink to={campaignUrl}>{this.state.campaign.title}</NavLink>
           </h1>
           <p>{this.state.campaign.tagline}</p>
         </div>
-        <Controls 
-          bumpIndex={this.bumpIndex}
-          inboxIndex={this.state.selectedIndex}
-          inboxLength={this.state.inbox.length}
-          reportback={reportback}
-        />
         <div className="row">
-          <div className="col-md-12">{content}</div>
+          <div className="col-md-12">
+            <h2>Inbox <span className="badge">{inboxCount}</span></h2>
+          </div>
+        </div>
+        {controls}
+        <div className="row">
+          <div className="col-md-12">
+            {content}
+          </div>
+          <div className="col-md-12">
+            <h2>Reviewed</h2>
+            <ReportbackList 
+              campaign={this.state.campaign}
+              reportbackIds={reviewedIds}
+            />
+          </div>
         </div>
       </div>
     );
@@ -131,29 +163,30 @@ var Controls = React.createClass({
     this.props.bumpIndex(increment);
   },
   render: function() {
-    if (!this.props.reportback) {
-      return null;
+    var nextLink, prevLink =null;
+    if (this.props.inboxIndex > 0)  {
+      prevLink = (
+        <li className="previous">
+          <a id="prev-entry" onClick={this.pagerClick.bind(this, -1)}>
+            <span className="glyphicon glyphicon-chevron-left" />
+          </a>
+        </li>
+      );
+    }
+    if ( this.props.inboxCount > 1 && this.props.inboxIndex != (this.props.inboxCount - 1) ) {
+      nextLink = (
+        <li className="next">
+          <a id="next-entry" onClick={this.pagerClick.bind(this, 1)}>
+            <span className="glyphicon glyphicon-chevron-right" />
+          </a>
+        </li>
+      );
     }
     return (
       <nav>
         <ul className="pager inbox-pager">
-          <li className="previous">
-            <a id="prev-entry" onClick={this.pagerClick.bind(this, -1)}>
-              <span className="glyphicon glyphicon-chevron-left" />
-            </a>
-          </li>
-          <li>
-            <span>
-              <small>
-              <span className="glyphicon glyphicon-inbox"></span> {this.props.inboxIndex + 1} / {this.props.inboxLength}
-              </small>
-            </span>
-          </li>
-          <li className="next">
-            <a id="next-entry" onClick={this.pagerClick.bind(this, 1)}>
-              <span className="glyphicon glyphicon-chevron-right" />
-            </a>
-          </li>
+          {prevLink}
+          {nextLink}
         </ul>
       </nav>
     );

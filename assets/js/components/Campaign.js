@@ -1,7 +1,8 @@
-import React from 'react'
-import { Link } from 'react-router'
+import React from 'react';
+import { Link } from 'react-router';
 
-import GalleryItem from './GalleryItem'
+import GalleryItem from './GalleryItem';
+import LoadingView from './LoadingView';
 
 export default React.createClass({
   componentDidMount: function() {
@@ -45,24 +46,31 @@ export default React.createClass({
   },
   render: function() {
     if (!this.state.campaignLoaded) {
-      return <div>Loading</div>;
+      return <LoadingView title="Loading campaign..." />;
     }
     var inboxUrl = '/campaigns/' + this.state.campaign.id + '/inbox';
-    var reportbackItems = this.state.gallery.map(function(reportbackItem) {
-      // @todo: Move this into a storage.users.add function
-      var user = reportbackItem.user;
-      //  @TODO permalink to Reportback instead.
-      var url = '/members/' + user.id;
-      return (
-        <GalleryItem 
-          key={reportbackItem.id}
-          caption={reportbackItem.caption.substring(0,60)}
-          href={url}
-          imgSrc={reportbackItem.media.uri}
-          reportbackItem={reportbackItem}
-        />
-      );
-    });
+    var content;
+    if (!this.state.galleryLoaded) {
+      content = <LoadingView title="Loading gallery..." />;
+    }
+    else {
+      content = this.state.gallery.map(function(reportbackItem) {
+        // @todo: Move this into a storage.users.add function
+        var user = reportbackItem.user;
+        //  @TODO permalink to Reportback instead.
+        var url = '/members/' + user.id;
+        return (
+          <GalleryItem 
+            key={reportbackItem.id}
+            caption={reportbackItem.caption.substring(0,60)}
+            href={url}
+            imgSrc={reportbackItem.media.uri}
+            reportbackItem={reportbackItem}
+          />
+        );
+      });
+    }
+
     return (
       <div className="container">
 	      <div className="page-header">
@@ -71,25 +79,9 @@ export default React.createClass({
 	        <p>{this.state.campaign.tagline}</p>
 	      </div>
 	      <div className="row">
-	        {reportbackItems}
+	        {content}
 	      </div>
       </div>
     )
-  },
-  renderGallery: function() {
-    if (!this.state.galleryLoaded) {
-      return this.renderLoadingView('Loading...');
-    }
-    if (this.state.gallery.length == 0) {
-      return this.renderLoadingView('No photos in gallery.');
-    }
-
-  },
-  renderLoadingView: function(message) {
-    return (
-      <div>
-        <h4>{message}</h4>
-      </div>
-    );
   },
 })
