@@ -83,7 +83,7 @@ var CampaignsTable = React.createClass({
 
 var CampaignsListItem = React.createClass({
   render: function() {
-    var url = '/campaigns/' +  this.props.campaign.id.toString();
+    var url = '/campaigns/' +  this.props.campaign.id.toString() + '/inbox';
     return (
       <NavLink className="list-group-item" to={url}>
         <h3>{this.props.campaign.title}</h3>
