@@ -11,6 +11,9 @@ a:hover {
 .gallery .caption {
   height: 40px;
 }
+.reportback {
+  background: #f8f8f8;
+}
 .reportback-item {
   background: white;
   /* hardcoded to image width for now */
@@ -23,14 +26,7 @@ a:hover {
   width: 80px;
   height: 80px;
 }
-.carousel {
-  background: #333;
-}
-.carousel-caption {
-  text-shadow: none;
-  background-color: rgba(0, 0, 0, 0.5);
-  font-size: 120%;
-}
+
 .list-group-item span.key {
   margin-right: 0.25em;
 }

@@ -1,8 +1,17 @@
 import Firebase from 'firebase';
+var loremIpsum = require('lorem-ipsum')
 
 let Helpers = {
   dummyImageUrl: function(timestamp) {
-    return "http://lorempixel.com/400/400/cats/?id=" + timestamp;
+    var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "fashion", "people", "nature", "sports", "technics", "transport"];
+    var randomCategory = categories[Math.round(Math.random()*categories.length)];
+    return "http://lorempixel.com/400/400/" + randomCategory + "/?id=" + timestamp;
+  },
+  dummyText: function() {
+    return loremIpsum({
+      count: 1,
+      units: 'sentences',
+    });
   },
   firebaseUrl: function() {
     return "https://sweltering-torch-5166.firebaseio.com";
@@ -29,7 +38,7 @@ let Helpers = {
 
     var newMediaRef = firebaseRef.child("media").push({
       campaign: campaignId,
-      caption: "DoSomething? OK Guy",
+      caption: this.dummyText(),
       created_at: timestamp,
       gallery: false,
       reportback: reportbackId,
