@@ -19,7 +19,7 @@ export default React.createClass({
   componentWillMount: function() {
     this.fetchCampaign(this.props.params.campaignId);
     this.firebaseRef = new Firebase(Helpers.firebaseUrl());
-    this.bindAsObject(this.firebaseRef.child('reportbacks'), "reportbacks");
+    this.bindAsObject(this.firebaseRef.child("reportbacks"), "reportbacks");
     this.campaignReportbackUrl = 'campaigns/' + this.props.params.campaignId + '/reportbacks/';
     this.bindAsObject(this.firebaseRef.child(this.campaignReportbackUrl + '/pending'), 'inbox');
     this.bindAsObject(this.firebaseRef.child(this.campaignReportbackUrl + '/reviewed'), 'reviewed');
@@ -39,17 +39,9 @@ export default React.createClass({
   },
   handleGenerateReportbackSubmit: function(e) {
     e.preventDefault();
-    var timestamp = new Date().getTime();
-    var status = 'pending';
-    var newReportbackRef = this.firebaseRefs.reportbacks.push({
-      // @todo Campaign helper function should cast id to integer properly
-      campaign: Number(this.state.campaign.id),
-      submitted_at: timestamp,
-      quantity: Math.round(Math.random()*4000) + 1,
-      status: status,
-      user: '555cc065469c6430068b6dfb'
-    });
-    var reportbackId = newReportbackRef.key();
+    var reportbackId = Helpers.generateReportback(Number(this.state.campaign.id));
+    // Might be able to get away with just a general query on reportbacks
+    // Need to filter by campaign ID AND status... unless we don't bindAsObject
     this.firebaseRefs.inbox.child(reportbackId).set(true);
   },
   getInitialState: function() {
