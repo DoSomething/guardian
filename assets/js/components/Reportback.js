@@ -26,7 +26,8 @@ export default React.createClass({
     if (!this.isValidReportback() || !this.state.reportback) {
       return null;
     }
-    var label = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
+    var quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
+    var mediaIds = Object.keys(this.state.reportback.media);
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
     var user = {
       id: this.state.reportback.user,
@@ -36,8 +37,7 @@ export default React.createClass({
         <div className="panel-body row">
           <div className="col-md-8 reportback-gallery">
             <ReportbackItem
-              url={Helpers.dummyImageUrl(this.state.reportback.submitted_at)}
-              caption="DoSomething? Just did!"
+              mediaId={mediaIds[0]}
             />
           </div>
           <div className="col-md-4">
@@ -45,7 +45,7 @@ export default React.createClass({
               key={user.id}
               user={user}
             />
-            <h3>{this.state.reportback.quantity} <small>{label}</small></h3>
+            <h3>{this.state.reportback.quantity} <small>{quantityLabel}</small></h3>
             <ul className="list-group">
               <li className="list-group-item">
                 <small><span className="key">submitted</span> <strong>{prettyDateSubmitted}</strong></small>

@@ -2,8 +2,18 @@ import React from 'react';;
 import Firebase from 'firebase';
 import ReactFireMixin from 'reactfire';
 
+import Helpers from '../utils/Helpers.js';
+
 export default React.createClass({
+  componentWillMount: function() {
+    var firebaseRef = new Firebase(Helpers.firebaseUrl());
+    this.bindAsObject(firebaseRef.child("media/" + this.props.mediaId), "media");
+  },
+  mixins: [ReactFireMixin],
   render: function() {
+    if (!this.state) {
+      return null;
+    }
     return (
       <div className="reportback-item">
         <div>
@@ -13,8 +23,8 @@ export default React.createClass({
           </label>  
         </div>
         <div>
-          <img src={this.props.url} />
-          <h4 className="text-center">{this.props.caption}</h4>
+          <img src={this.state.media.uri} />
+          <h4 className="text-center">{this.state.media.caption}</h4>
         </div>
       </div>
     );      
