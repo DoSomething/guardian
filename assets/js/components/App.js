@@ -1,6 +1,8 @@
 import React from 'react';
 import activeComponent from 'react-router-active-component';
 
+
+import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import NavLink from './NavLink';
 import Helpers from '../utils/Helpers.js';
@@ -18,7 +20,7 @@ export default React.createClass({
       }
     });
     this.setState({
-      email: credentials.email
+      email: credentials.email,
     });
   },
   componentWillMount: function() {
@@ -45,7 +47,6 @@ export default React.createClass({
             console.log("Error creating user:", error);
         }
       } else {
-        console.log(this);
         self.authenticateUser(credentials);
       }
     });
@@ -65,14 +66,14 @@ export default React.createClass({
     var content = this.props.children;
     if (!this.state.email) {
       content = (
-        <AnonView 
-          authenticateUser={this.authenticateUser} 
+        <RegisterView 
           createUser={this.createUser} />
       );
     }
     return (
       <div>
         <Navbar 
+          authenticateUser={this.authenticateUser} 
           email={this.state.email}
           logoutUser={this.logoutUser} 
         />
@@ -84,7 +85,7 @@ export default React.createClass({
   }
 });
 
-var AnonView = React.createClass({
+var RegisterView = React.createClass({
   render: function() {
     return (
       <div className="container">
@@ -104,12 +105,17 @@ var AnonView = React.createClass({
 
 var Navbar = React.createClass({
   render: function() {
-    var content = <NavBarLoginForm />;
+    var content;
     if (this.props.email) {
       content = (
         <NavBarAuthenticated 
           email={this.props.email}
           logoutUser={this.props.logoutUser} />
+      );
+    }
+    else {
+      content = (
+        <LoginForm authenticateUser={this.props.authenticateUser} />
       );
     }
     return (
@@ -160,19 +166,3 @@ var NavBarAuthenticated = React.createClass({
   }
 });
 
-var NavBarLoginForm = React.createClass({
-  render: function() {
-    return (
-      <form className="navbar-form navbar-right" role="search">
-        <div className="form-group">
-          <input type="text" className="form-control" name="username" placeholder="psloth@dosomething.org" />
-        </div>
-        <div className="form-group">
-          <input type="text" className="form-control" name="password" placeholder="Password" />
-        </div>
-        <button type="submit" className="btn btn-primary">Login</button>
-      </form>
-    );
-
-  }
-});
