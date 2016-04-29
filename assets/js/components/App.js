@@ -44,7 +44,7 @@ var AnonView = React.createClass({
     return (
       <div className="container">
         <div className="page-header">
-          <img src="./images/ds-blue.png" className="center-block img-circle" />
+          <img src="/images/ds-blue.png" className="center-block img-circle" />
         </div>
         <div className="row">
           <div className="col-md-4 col-md-offset-4">
