@@ -4,6 +4,8 @@ export default React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
     var credentials = {
+      name: this.refs.name.value,
+      avatar_uri: this.refs.avatar_uri.value,
       email: this.refs.email.value,
       password: this.refs.password.value,
     };
@@ -19,7 +21,7 @@ export default React.createClass({
             <input type="name" className="form-control" ref="name" placeholder="Your name" />
           </div>
           <div className="form-group">
-            <input type="avatar" className="form-control" ref="email" placeholder="Avatar URL" />
+            <input type="avatar" className="form-control" ref="avatar_uri" placeholder="Avatar URL" />
           </div>
           <div className="form-group">
             <input type="email" className="form-control" ref="email" placeholder="Email" />

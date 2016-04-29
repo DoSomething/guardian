@@ -48,6 +48,11 @@ export default React.createClass({
         }
       } else {
         self.authenticateUser(credentials);
+        self.firebaseRef.child("users").child(userData.uid).set({
+          name: credentials.name,
+          email: credentials.email,
+          avatar_uri: credentials.avatar_uri 
+        });
       }
     });
   },
