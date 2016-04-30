@@ -57,6 +57,7 @@ export default React.createClass({
   mixins: [ReactFireMixin],
   postReview: function(status) {
     var reportbackId = this.state.selectedReportbackId;
+    Helpers.createReview(reportbackId, status);
     this.firebaseRefs.reportbacks.child(reportbackId).update({
       reviewed_at: new Date().getTime(),
       status: status

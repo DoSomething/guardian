@@ -2,26 +2,6 @@ import Firebase from 'firebase';
 var loremIpsum = require('lorem-ipsum')
 
 let Helpers = {
-  dummyImageUrl: function(timestamp) {
-    var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
-    var randomCategory = categories[Math.round(Math.random()*categories.length)];
-    return "http://lorempixel.com/400/400/" + randomCategory + "/?id=" + timestamp;
-  },
-  dummyText: function() {
-    return loremIpsum({
-      count: 1,
-      units: 'sentences',
-    });
-  },
-  firebaseUrl: function() {
-    return "https://sweltering-torch-5166.firebaseio.com";
-  },
-  formatTimestamp: function(timestamp) {
-    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var date = new Date(timestamp);
-    var prettyDate = months[date.getUTCMonth()] + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear() + ' ' + date.toLocaleTimeString();
-    return prettyDate;
-  },
   createReportback: function(campaignId) {
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
@@ -50,7 +30,41 @@ let Helpers = {
     firebaseRef.child("reportbacks/" + reportbackId + "/media/" + mediaId).set(true);
     firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
     return reportbackId;
-  }
+  },
+  createReview: function(reportbackId, status) {
+    var firebaseRef = new Firebase(this.firebaseUrl());
+    var authData = firebaseRef.getAuth();
+    var timestamp = new Date().getTime();
+    var newReviewRef = firebaseRef.child("reviews").push({
+      reportback: reportbackId,
+      submitted_at: timestamp,
+      status: status,
+      user: authData.uid,
+    });
+    var reviewId = newReviewRef.key();
+    firebaseRef.child("reportbacks/" + reportbackId + "/reviews/" + reviewId).set(true);
+    firebaseRef.child("users/" + authData.uid + "/reviews/" + reviewId).set(true);
+  },
+  dummyImageUrl: function(timestamp) {
+    var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
+    var randomCategory = categories[Math.round(Math.random()*categories.length)];
+    return "http://lorempixel.com/400/400/" + randomCategory + "/?id=" + timestamp;
+  },
+  dummyText: function() {
+    return loremIpsum({
+      count: 1,
+      units: 'sentences',
+    });
+  },
+  firebaseUrl: function() {
+    return "https://sweltering-torch-5166.firebaseio.com";
+  },
+  formatTimestamp: function(timestamp) {
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var date = new Date(timestamp);
+    var prettyDate = months[date.getUTCMonth()] + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear() + ' ' + date.toLocaleTimeString();
+    return prettyDate;
+  },
 }
 
 export default Helpers;
