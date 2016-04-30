@@ -26,6 +26,9 @@ export default React.createClass({
     if (this.state.user.avatar_uri) {
       photo = this.state.user.avatar_uri;
     }
+    if (!this.props.displayAvatar) {
+      return <Link to={profileUrl} target="_blank">{name}</Link>;
+    }
     return (
       <Link to={profileUrl} target="_blank">
         <div className="media">

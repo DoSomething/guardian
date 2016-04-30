@@ -55,6 +55,7 @@ export default React.createClass({
           <div className="col-md-4">
             <MemberSummary
               key={this.state.reportback.user}
+              displayAvatar={true}
               userId={this.state.reportback.user}
             />
             <h3>{this.state.reportback.quantity} <small>{quantityLabel}</small></h3>
@@ -93,8 +94,11 @@ var ReviewSummary = React.createClass({
     else if (status == 'investigate') {
       statusName = 'referred back';
     }
-    var reviewerUrl = "/members/" + this.state.review.user;
-    var reviewer = <a href={reviewerUrl} target="_blank">{this.state.review.user}</a>;
+    var reviewer = 
+      <MemberSummary
+        key={this.state.review.user}
+        displayAvatar={false}
+        userId={this.state.review.user} />;
     return (
       <div>
         <small>
@@ -102,7 +106,6 @@ var ReviewSummary = React.createClass({
         </small>
       </div>
     );
-    return <div>{this.state.review.status}</div>;
   }
 });
 
