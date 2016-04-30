@@ -12,7 +12,9 @@ export default React.createClass({
   componentWillMount: function() {
     var firebaseRef = new Firebase(Helpers.firebaseUrl());
     if (this.isValidReportback()) {
-      this.bindAsObject(firebaseRef.child('reportbacks/' + this.props.reportbackId), "reportback");
+      var url = "reportbacks/" + this.props.reportbackId;
+      this.bindAsObject(firebaseRef.child(url), "reportback");
+      this.bindAsArray(firebaseRef.child(url + "/reviews"), "reviews");
     }
   },
   isValidReportback: function() {
@@ -29,7 +31,17 @@ export default React.createClass({
     var quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
     var mediaIds = Object.keys(this.state.reportback.media);
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
-
+    var sidebar = null;
+    if (this.props.reviewing) {
+      sidebar = <ReportbackStatusForm 
+              postReview={this.postReview}
+              reportback={this.state.reportback} />;
+    }
+    else {
+      sidebar = this.state.reviews.map(function(review) {
+        return <div>Review ID: {review[".key"]}</div>;
+      });
+    }
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
@@ -52,16 +64,14 @@ export default React.createClass({
                 <small><span className="key">source</span> <strong>Web (desktop)</strong></small>
               </li>
             </ul>
-            <ReportbackStatusForm 
-              postReview={this.postReview}
-              reportback={this.state.reportback}
-            />
+            {sidebar}
           </div>
-      </div>
+        </div>
       </div>
     );
   },
 });
+
 
 var ReportbackStatusForm = React.createClass({
   componentDidMount: function() {

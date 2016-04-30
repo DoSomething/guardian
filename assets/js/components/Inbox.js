@@ -88,6 +88,7 @@ export default React.createClass({
             key={this.state.selectedReportbackId}
             campaign={this.state.campaign}
             reportbackId={this.state.selectedReportbackId}
+            reviewing={true}
             postReview={this.postReview}
           />
         );  
