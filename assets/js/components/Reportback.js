@@ -29,9 +29,7 @@ export default React.createClass({
     var quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
     var mediaIds = Object.keys(this.state.reportback.media);
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
-    var user = {
-      id: this.state.reportback.user,
-    };
+
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
@@ -42,8 +40,8 @@ export default React.createClass({
           </div>
           <div className="col-md-4">
             <MemberSummary
-              key={user.id}
-              user={user}
+              key={this.state.reportback.user}
+              userId={this.state.reportback.user}
             />
             <h3>{this.state.reportback.quantity} <small>{quantityLabel}</small></h3>
             <ul className="list-group">
