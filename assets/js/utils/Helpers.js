@@ -22,10 +22,12 @@ let Helpers = {
     var prettyDate = months[date.getUTCMonth()] + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear() + ' ' + date.toLocaleTimeString();
     return prettyDate;
   },
-  generateReportback: function(campaignId) {
+  createReportback: function(campaignId) {
     var firebaseRef = new Firebase(this.firebaseUrl());
+    var authData = firebaseRef.getAuth();
+    console.log(authData);
     var timestamp = new Date().getTime();
-    var userId = "555cc065469c6430068b6dfb";
+    var userId = authData.uid;
 
     var newReportbackRef = firebaseRef.child("reportbacks").push({
       campaign: campaignId,
@@ -48,6 +50,7 @@ let Helpers = {
     });
     var mediaId = newMediaRef.key();
     firebaseRef.child("reportbacks/" + reportbackId + "/media/" + mediaId).set(true);
+    firebaseRef.child("users/" + userId + "/reportbacks/" + reportbackId).set(true);
     return reportbackId;
   }
 }

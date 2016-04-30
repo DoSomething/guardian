@@ -39,7 +39,7 @@ export default React.createClass({
   },
   handleGenerateReportbackSubmit: function(e) {
     e.preventDefault();
-    var reportbackId = Helpers.generateReportback(Number(this.state.campaign.id));
+    var reportbackId = Helpers.createReportback(Number(this.state.campaign.id));
     // Might be able to get away with just a general query on reportbacks
     // Need to filter by campaign ID AND status... unless we don't bindAsObject
     this.firebaseRefs.inbox.child(reportbackId).set(true);

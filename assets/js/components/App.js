@@ -162,7 +162,7 @@ var NavBarAuthenticated = React.createClass({
             <ul className="dropdown-menu">
               <li><a href="#">Reviews</a></li>
               <li role="separator" className="divider"></li>
-              <li><a onClick={this.props.logoutUser}><small>Logout</small></a></li>
+              <li><a href="#" onClick={this.props.logoutUser}><small>Logout</small></a></li>
             </ul>
           </li>
         </ul>
