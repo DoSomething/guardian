@@ -37,7 +37,7 @@ let Helpers = {
     var timestamp = new Date().getTime();
     var newReviewRef = firebaseRef.child("reviews").push({
       reportback: reportbackId,
-      submitted_at: timestamp,
+      created_at: timestamp,
       status: status,
       user: authData.uid,
     });

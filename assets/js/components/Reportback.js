@@ -33,13 +33,15 @@ export default React.createClass({
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
     var sidebar = null;
     if (this.props.reviewing) {
-      sidebar = <ReportbackStatusForm 
+      sidebar = <ReviewForm 
               postReview={this.postReview}
               reportback={this.state.reportback} />;
     }
     else {
       sidebar = this.state.reviews.map(function(review) {
-        return <div>Review ID: {review[".key"]}</div>;
+        return <ReviewSummary 
+          key={review[".key"]} 
+          reviewId={review[".key"]} />;
       });
     }
     return (
@@ -72,8 +74,39 @@ export default React.createClass({
   },
 });
 
+var ReviewSummary = React.createClass({
+  componentWillMount: function() {
+    var firebaseRef = new Firebase(Helpers.firebaseUrl());
+    this.bindAsObject(firebaseRef.child("reviews/" + this.props.reviewId), "review");
+  },
+  mixins: [ReactFireMixin],
+  render: function() {
+    if (!this.state) {
+      return null;
+    }
+    var prettyReviewedAt = Helpers.formatTimestamp(this.state.review.created_at);
+    var status = this.state.review.status;
+    var statusName = status;
+    if (status == 'approved') {
+      statusName = 'verified';
+    }
+    else if (status == 'investigate') {
+      statusName = 'referred back';
+    }
+    var reviewerUrl = "/members/" + this.state.review.user;
+    var reviewer = <a href={reviewerUrl} target="_blank">{this.state.review.user}</a>;
+    return (
+      <div>
+        <small>
+          <ReportbackStatusIcon status={status} /> <strong>{statusName}</strong> by {reviewer} {prettyReviewedAt}
+        </small>
+      </div>
+    );
+    return <div>{this.state.review.status}</div>;
+  }
+});
 
-var ReportbackStatusForm = React.createClass({
+var ReviewForm = React.createClass({
   componentDidMount: function() {
     window.addEventListener('keydown', this.onKeyDown);
   },
