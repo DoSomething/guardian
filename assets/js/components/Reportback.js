@@ -28,7 +28,10 @@ export default React.createClass({
     if (!this.isValidReportback() || !this.state.reportback) {
       return null;
     }
-    var quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
+    var quantityLabel = "nouns verbed";
+    if (this.props.campaign) {
+      quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
+    }
     var mediaIds = Object.keys(this.state.reportback.media);
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
     var sidebar = null;
