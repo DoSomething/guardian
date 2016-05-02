@@ -4,9 +4,9 @@ export default React.createClass({
   render() {
     return (
       <div className="container">
-        <div className="page-header">
-          <h1>Guardian</h1>
-          <p>Welcome, fellow guardian of the Gallery.</p>
+        <div className="row">
+          <div className="col-md-4 col-offset-md-4">
+          </div>
         </div>
       </div>
     );

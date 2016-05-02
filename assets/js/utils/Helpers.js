@@ -2,8 +2,51 @@ import Firebase from 'firebase';
 var loremIpsum = require('lorem-ipsum')
 
 let Helpers = {
+  createReportback: function(campaignId) {
+    var firebaseRef = new Firebase(this.firebaseUrl());
+    var authData = firebaseRef.getAuth();
+    var timestamp = new Date().getTime();
+
+    var newReportbackRef = firebaseRef.child("reportbacks").push({
+      campaign: campaignId,
+      submitted_at: timestamp,
+      quantity: Math.round(Math.random()*4000) + 1,
+      status: "pending",
+      user: authData.uid,
+    });
+    var reportbackId = newReportbackRef.key();
+
+    var newMediaRef = firebaseRef.child("media").push({
+      campaign: campaignId,
+      caption: this.dummyText(),
+      created_at: timestamp,
+      gallery: false,
+      reportback: reportbackId,
+      type: "image",
+      uri: this.dummyImageUrl(timestamp),
+      user: authData.uid,
+    });
+    var mediaId = newMediaRef.key();
+    firebaseRef.child("reportbacks/" + reportbackId + "/media/" + mediaId).set(true);
+    firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
+    return reportbackId;
+  },
+  createReview: function(reportbackId, status) {
+    var firebaseRef = new Firebase(this.firebaseUrl());
+    var authData = firebaseRef.getAuth();
+    var timestamp = new Date().getTime();
+    var newReviewRef = firebaseRef.child("reviews").push({
+      reportback: reportbackId,
+      created_at: timestamp,
+      status: status,
+      user: authData.uid,
+    });
+    var reviewId = newReviewRef.key();
+    firebaseRef.child("reportbacks/" + reportbackId + "/reviews/" + reviewId).set(true);
+    firebaseRef.child("users/" + authData.uid + "/reviews/" + reviewId).set(true);
+  },
   dummyImageUrl: function(timestamp) {
-    var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "fashion", "people", "nature", "sports", "technics", "transport"];
+    var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
     var randomCategory = categories[Math.round(Math.random()*categories.length)];
     return "http://lorempixel.com/400/400/" + randomCategory + "/?id=" + timestamp;
   },
@@ -22,34 +65,6 @@ let Helpers = {
     var prettyDate = months[date.getUTCMonth()] + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear() + ' ' + date.toLocaleTimeString();
     return prettyDate;
   },
-  generateReportback: function(campaignId) {
-    var firebaseRef = new Firebase(this.firebaseUrl());
-    var timestamp = new Date().getTime();
-    var userId = "555cc065469c6430068b6dfb";
-
-    var newReportbackRef = firebaseRef.child("reportbacks").push({
-      campaign: campaignId,
-      submitted_at: timestamp,
-      quantity: Math.round(Math.random()*4000) + 1,
-      status: "pending",
-      user: userId,
-    });
-    var reportbackId = newReportbackRef.key();
-
-    var newMediaRef = firebaseRef.child("media").push({
-      campaign: campaignId,
-      caption: this.dummyText(),
-      created_at: timestamp,
-      gallery: false,
-      reportback: reportbackId,
-      type: "image",
-      uri: this.dummyImageUrl(timestamp),
-      user: userId,
-    });
-    var mediaId = newMediaRef.key();
-    firebaseRef.child("reportbacks/" + reportbackId + "/media/" + mediaId).set(true);
-    return reportbackId;
-  }
 }
 
 export default Helpers;

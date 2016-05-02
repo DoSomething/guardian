@@ -12,7 +12,9 @@ export default React.createClass({
   componentWillMount: function() {
     var firebaseRef = new Firebase(Helpers.firebaseUrl());
     if (this.isValidReportback()) {
-      this.bindAsObject(firebaseRef.child('reportbacks/' + this.props.reportbackId), "reportback");
+      var url = "reportbacks/" + this.props.reportbackId;
+      this.bindAsObject(firebaseRef.child(url), "reportback");
+      this.bindAsArray(firebaseRef.child(url + "/reviews"), "reviews");
     }
   },
   isValidReportback: function() {
@@ -26,12 +28,25 @@ export default React.createClass({
     if (!this.isValidReportback() || !this.state.reportback) {
       return null;
     }
-    var quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
+    var quantityLabel = "nouns verbed";
+    if (this.props.campaign) {
+      quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
+    }
     var mediaIds = Object.keys(this.state.reportback.media);
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
-    var user = {
-      id: this.state.reportback.user,
-    };
+    var sidebar = null;
+    if (this.props.reviewing) {
+      sidebar = <ReviewForm 
+              postReview={this.postReview}
+              reportback={this.state.reportback} />;
+    }
+    else {
+      sidebar = this.state.reviews.map(function(review) {
+        return <ReviewSummary 
+          key={review[".key"]} 
+          reviewId={review[".key"]} />;
+      });
+    }
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
@@ -42,8 +57,9 @@ export default React.createClass({
           </div>
           <div className="col-md-4">
             <MemberSummary
-              key={user.id}
-              user={user}
+              key={this.state.reportback.user}
+              displayAvatar={true}
+              userId={this.state.reportback.user}
             />
             <h3>{this.state.reportback.quantity} <small>{quantityLabel}</small></h3>
             <ul className="list-group">
@@ -54,18 +70,49 @@ export default React.createClass({
                 <small><span className="key">source</span> <strong>Web (desktop)</strong></small>
               </li>
             </ul>
-            <ReportbackStatusForm 
-              postReview={this.postReview}
-              reportback={this.state.reportback}
-            />
+            {sidebar}
           </div>
-      </div>
+        </div>
       </div>
     );
   },
 });
 
-var ReportbackStatusForm = React.createClass({
+var ReviewSummary = React.createClass({
+  componentWillMount: function() {
+    var firebaseRef = new Firebase(Helpers.firebaseUrl());
+    this.bindAsObject(firebaseRef.child("reviews/" + this.props.reviewId), "review");
+  },
+  mixins: [ReactFireMixin],
+  render: function() {
+    if (!this.state) {
+      return null;
+    }
+    var prettyReviewedAt = Helpers.formatTimestamp(this.state.review.created_at);
+    var status = this.state.review.status;
+    var statusName = status;
+    if (status == 'approved') {
+      statusName = 'verified';
+    }
+    else if (status == 'investigate') {
+      statusName = 'referred back';
+    }
+    var reviewer = 
+      <MemberSummary
+        key={this.state.review.user}
+        displayAvatar={false}
+        userId={this.state.review.user} />;
+    return (
+      <div>
+        <small>
+          <ReportbackStatusIcon status={status} /> <strong>{statusName}</strong> by {reviewer} {prettyReviewedAt}
+        </small>
+      </div>
+    );
+  }
+});
+
+var ReviewForm = React.createClass({
   componentDidMount: function() {
     window.addEventListener('keydown', this.onKeyDown);
   },

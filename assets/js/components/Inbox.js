@@ -39,7 +39,7 @@ export default React.createClass({
   },
   handleGenerateReportbackSubmit: function(e) {
     e.preventDefault();
-    var reportbackId = Helpers.generateReportback(Number(this.state.campaign.id));
+    var reportbackId = Helpers.createReportback(Number(this.state.campaign.id));
     // Might be able to get away with just a general query on reportbacks
     // Need to filter by campaign ID AND status... unless we don't bindAsObject
     this.firebaseRefs.inbox.child(reportbackId).set(true);
@@ -57,6 +57,7 @@ export default React.createClass({
   mixins: [ReactFireMixin],
   postReview: function(status) {
     var reportbackId = this.state.selectedReportbackId;
+    Helpers.createReview(reportbackId, status);
     this.firebaseRefs.reportbacks.child(reportbackId).update({
       reviewed_at: new Date().getTime(),
       status: status
@@ -87,6 +88,7 @@ export default React.createClass({
             key={this.state.selectedReportbackId}
             campaign={this.state.campaign}
             reportbackId={this.state.selectedReportbackId}
+            reviewing={true}
             postReview={this.postReview}
           />
         );  

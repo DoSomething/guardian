@@ -17,6 +17,7 @@ export default React.createClass({
           key={reportbackId}
           campaign={this.props.campaign}
           reportbackId={reportbackId}
+          reviewing={false}
         />
       );
     }, this);

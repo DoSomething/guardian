@@ -8,8 +8,8 @@ h1, h2 {
 a:hover {
   text-decoration: none;
 }
-.gallery .caption {
-  height: 40px;
+.navbar-brand {
+  margin-left: 0 !important;
 }
 .reportback {
   background: #f8f8f8;
