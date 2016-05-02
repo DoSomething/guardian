@@ -22,7 +22,7 @@ export default React.createClass({
   },
   mixins: [ReactFireMixin],
   postReview: function(status) {
-    this.props.postReview(status);
+    Helpers.createReview(this.state.reportback.campaign, this.props.reportbackId, status);
   },
   render: function() {
     if (!this.isValidReportback() || !this.state.reportback) {
