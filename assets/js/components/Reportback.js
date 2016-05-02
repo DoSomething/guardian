@@ -37,8 +37,8 @@ export default React.createClass({
     var sidebar = null;
     if (this.props.reviewing) {
       sidebar = <ReviewForm 
-              postReview={this.postReview}
-              reportback={this.state.reportback} />;
+        postReview={this.postReview}
+        reportback={this.state.reportback} />;
     }
     else {
       sidebar = this.state.reviews.map(function(review) {
@@ -53,7 +53,7 @@ export default React.createClass({
           <div className="col-md-8 reportback-gallery">
             <ReportbackItem
               mediaId={mediaIds[0]}
-            />
+              reviewing={this.props.reviewing} />
           </div>
           <div className="col-md-4">
             <MemberSummary
