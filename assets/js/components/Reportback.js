@@ -56,7 +56,7 @@ export default React.createClass({
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
-          <div className="col-md-8 reportback-gallery">
+          <div className="col-md-8 text-center">
             <ReportbackItem
               mediaId={this.mediaId}
               reviewing={this.props.reviewing} 

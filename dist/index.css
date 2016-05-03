@@ -14,15 +14,17 @@ a, a:hover {
 .reportback {
   background: #f8f8f8;
 }
-.reportback-item {
-  /* hardcoded to image width for now */
-  width: 410px;
-  margin: 0 auto;
-  padding: 4px;
+.caption {
+  height: 30px;
 }
+.gallery {
+  margin-top: 30px;
+}
+
 .reportback-item button {
   padding-top: 8px;
 }
+
 .avatar {
   width: 80px;
   height: 80px;

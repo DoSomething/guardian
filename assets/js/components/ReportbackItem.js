@@ -27,14 +27,22 @@ export default React.createClass({
     else {
       gallery = <small><ReportbackStatusIcon status={"excluded"} /> excluded</small>;
     }
+    var controls = null;
+    if (this.props.reviewing) {
+      controls = (
+        <ul className="nav nav-pills">
+          <li>{gallery}</li>
+        </ul>
+      );
+    }
+
+    var caption = Helpers.trimText(this.state.media.caption, 50);
     return (
       <div className="reportback-item" id={"media-" + this.props.mediaId} >
         <button disabled={!this.props.reviewing} onClick={this.toggleGallery}>
-          <img src={this.state.media.uri} />
-          <ul className="nav nav-pills">
-            <li>{gallery}</li>
-          </ul>
-          <h4 className="text-center">{this.state.media.caption}</h4>
+          <img src={this.state.media.uri} className="img-responsive" />
+          {controls}
+          <h5 className="text-left caption">{caption}</h5>
         </button>
       </div>
     );

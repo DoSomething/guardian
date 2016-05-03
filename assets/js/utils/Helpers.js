@@ -83,6 +83,9 @@ let Helpers = {
     var prettyDate = months[date.getUTCMonth()] + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear() + ' ' + date.toLocaleTimeString();
     return prettyDate;
   },
+  trimText: function(string, length) {
+    return string.length > length ? string.substring(0, length - 3) + "..." : string.substring(0, length)
+  }
 }
 
 export default Helpers;
