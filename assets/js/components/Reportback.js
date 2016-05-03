@@ -5,7 +5,7 @@ import ReactFireMixin from 'reactfire';
 import MemberSummary from './MemberSummary';
 import NavLink from './NavLink';
 import Helpers from '../utils/Helpers.js';
-import ReportbackItem from './ReportbackItem';
+import Media from './Media';
 import ReportbackStatusIcon from './ReportbackStatusIcon';
 
 export default React.createClass({
@@ -54,7 +54,7 @@ export default React.createClass({
       <div className="panel panel-default reportback">
         <div className="panel-body row">
           <div className="col-md-8 text-center">
-            <ReportbackItem
+            <Media
               mediaId={this.mediaId}
               displayControls={true}
               reviewing={this.props.reviewing} 

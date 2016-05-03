@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 import Helpers from '../utils/Helpers.js';
 import GalleryItem from './GalleryItem';
 import LoadingView from './LoadingView';
-import ReportbackItem from './ReportbackItem';
+import Media from './Media';
 
 export default React.createClass({
   componentWillMount: function() {
@@ -56,7 +56,7 @@ export default React.createClass({
         }
         return (
           <div className="col-md-3 gallery">
-            <ReportbackItem 
+            <Media 
               key={mediaId}
               mediaId={mediaId} />
           </div>
