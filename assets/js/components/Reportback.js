@@ -17,12 +17,17 @@ export default React.createClass({
       this.bindAsArray(firebaseRef.child(url + "/reviews"), "reviews");
     }
   },
+  getInitialState: function() {
+    return {
+      gallery: true
+    }
+  },
   isValidReportback: function() {
     return !(this.props.reportbackId == ".key" || this.props.reportbackId == ".value");
   },
   mixins: [ReactFireMixin],
   postReview: function(status) {
-    Helpers.createReview(this.state.reportback.campaign, this.props.reportbackId, status);
+    Helpers.createReview(this.state.reportback.campaign, this.props.reportbackId, status, this.mediaId, this.state.gallery);
   },
   render: function() {
     if (!this.isValidReportback() || !this.state.reportback) {
@@ -33,6 +38,7 @@ export default React.createClass({
       quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
     }
     var mediaIds = Object.keys(this.state.reportback.media);
+    this.mediaId = mediaIds[0];
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
     var sidebar = null;
     if (this.props.reviewing) {
@@ -52,8 +58,9 @@ export default React.createClass({
         <div className="panel-body row">
           <div className="col-md-8 reportback-gallery">
             <ReportbackItem
-              mediaId={mediaIds[0]}
-              reviewing={this.props.reviewing} />
+              mediaId={this.mediaId}
+              reviewing={this.props.reviewing} 
+              setGallery={this.setGallery} />
           </div>
           <div className="col-md-4">
             <MemberSummary
@@ -76,6 +83,9 @@ export default React.createClass({
       </div>
     );
   },
+  setGallery: function(saveValue) {
+    this.state.gallery = saveValue;
+  }
 });
 
 var ReviewSummary = React.createClass({

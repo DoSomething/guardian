@@ -20,7 +20,7 @@ let Helpers = {
       campaign: campaignId,
       caption: this.dummyText(),
       created_at: timestamp,
-      gallery: false,
+      gallery: true,
       reportback: reportbackId,
       type: "image",
       uri: this.dummyImageUrl(timestamp),
@@ -31,7 +31,7 @@ let Helpers = {
     firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
     return reportbackId;
   },
-  createReview: function(campaignId, reportbackId, status) {
+  createReview: function(campaignId, reportbackId, status, mediaId, gallery) {
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
     var timestamp = new Date().getTime();
@@ -56,6 +56,12 @@ let Helpers = {
     var campaignReportbacksRef = firebaseRef.child("campaigns/" + campaignId + "/reportbacks");
     campaignReportbacksRef.child("pending").child(reportbackId).set(null);
     campaignReportbacksRef.child("reviewed").child(reportbackId).set(true);
+    // Post to Campaign gallery
+    var galleryUrl = "campaigns/" + campaignId + "/media/gallery/" + mediaId;
+    if (!gallery) {
+      gallery = null;
+    }
+    firebaseRef.child(galleryUrl).set(gallery);
   },
   dummyImageUrl: function(timestamp) {
     var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
