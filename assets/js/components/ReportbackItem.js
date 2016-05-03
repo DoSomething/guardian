@@ -8,7 +8,9 @@ import Helpers from '../utils/Helpers.js';
 export default React.createClass({
   componentWillMount: function() {
     var firebaseRef = new Firebase(Helpers.firebaseUrl());
-    this.bindAsObject(firebaseRef.child("media/" + this.props.mediaId), "media");
+    if (Helpers.isValidKey(this.props.mediaId)) {
+      this.bindAsObject(firebaseRef.child("media/" + this.props.mediaId), "media");
+    }
   },
   toggleGallery: function() {
     var saveValue = !this.state.media.gallery;

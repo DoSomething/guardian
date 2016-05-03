@@ -11,7 +11,7 @@ import ReportbackStatusIcon from './ReportbackStatusIcon';
 export default React.createClass({
   componentWillMount: function() {
     var firebaseRef = new Firebase(Helpers.firebaseUrl());
-    if (this.isValidReportback()) {
+    if (Helpers.isValidKey(this.props.reportbackId)) {
       var url = "reportbacks/" + this.props.reportbackId;
       this.bindAsObject(firebaseRef.child(url), "reportback");
       this.bindAsArray(firebaseRef.child(url + "/reviews"), "reviews");
@@ -22,15 +22,12 @@ export default React.createClass({
       gallery: true
     }
   },
-  isValidReportback: function() {
-    return !(this.props.reportbackId == ".key" || this.props.reportbackId == ".value");
-  },
   mixins: [ReactFireMixin],
   postReview: function(status) {
     Helpers.createReview(this.state.reportback.campaign, this.props.reportbackId, status, this.mediaId, this.state.gallery);
   },
   render: function() {
-    if (!this.isValidReportback() || !this.state.reportback) {
+    if (!Helpers.isValidKey(this.props.reportbackId) || !this.state.reportback) {
       return null;
     }
     var quantityLabel = "nouns verbed";
