@@ -30,7 +30,7 @@ export default React.createClass({
       gallery = <small><ReportbackStatusIcon status={"excluded"} /> excluded</small>;
     }
     var controls = null;
-    if (this.props.reviewing) {
+    if (this.props.displayControls) {
       controls = (
         <ul className="nav nav-pills">
           <li>{gallery}</li>

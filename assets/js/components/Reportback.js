@@ -56,6 +56,7 @@ export default React.createClass({
           <div className="col-md-8 text-center">
             <ReportbackItem
               mediaId={this.mediaId}
+              displayControls={true}
               reviewing={this.props.reviewing} 
               setGallery={this.setGallery} />
           </div>
