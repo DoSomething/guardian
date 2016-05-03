@@ -1,13 +1,20 @@
 import React from 'react';
+import Firebase from 'firebase';
+import ReactFireMixin from 'reactfire';
 import { Link } from 'react-router';
 
+import Helpers from '../utils/Helpers.js';
 import GalleryItem from './GalleryItem';
 import LoadingView from './LoadingView';
+import Media from './Media';
 
 export default React.createClass({
-  componentDidMount: function() {
+  componentWillMount: function() {
     if (!this.props.children) {
       this.fetchCampaign(this.props.params.campaignId);
+      this.firebaseRef = new Firebase(Helpers.firebaseUrl());
+      var mediaGalleryUrl = "campaigns/" + this.props.params.campaignId + "/media/gallery";
+      this.bindAsObject(this.firebaseRef.child(mediaGalleryUrl), "gallery");
     }
   },
   fetchCampaign: function(campaignId) {
@@ -21,20 +28,6 @@ export default React.createClass({
           campaign: json.data,
           campaignLoaded: true,
         });
-        this.fetchGallery(this.state.campaign.id);
-      })
-  },
-  fetchGallery: function(campaignId) {
-    var url = 'https://www.dosomething.org/api/v1/reportback-items?campaigns=' + campaignId + '&load_user=true';
-    fetch(url)
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        this.setState({
-          gallery: json.data,
-          galleryLoaded: true,
-        });
       })
   },
   getInitialState: function() {
@@ -44,29 +37,29 @@ export default React.createClass({
       campaign: null,
     };
   },
+  mixins: [ReactFireMixin],
   render: function() {
-    if (!this.state.campaignLoaded) {
+    if (!this.state || !this.state.campaignLoaded) {
       return <LoadingView title="Loading campaign..." />;
     }
     var inboxUrl = '/campaigns/' + this.state.campaign.id + '/inbox';
     var content;
-    if (!this.state.galleryLoaded) {
+
+    if (!this.state.gallery) {
       content = <LoadingView title="Loading gallery..." />;
     }
+    
     else {
-      content = this.state.gallery.map(function(reportbackItem) {
-        // @todo: Move this into a storage.users.add function
-        var user = reportbackItem.user;
-        //  @TODO permalink to Reportback instead.
-        var url = '/members/' + user.id;
+      content = Object.keys(this.state.gallery).reverse().map(function(mediaId) {
+        if (mediaId == ".key") {
+          return null;
+        }
         return (
-          <GalleryItem 
-            key={reportbackItem.id}
-            caption={reportbackItem.caption.substring(0,60)}
-            href={url}
-            imgSrc={reportbackItem.media.uri}
-            reportbackItem={reportbackItem}
-          />
+          <div className="col-md-3 gallery">
+            <Media 
+              key={mediaId}
+              mediaId={mediaId} />
+          </div>
         );
       });
     }

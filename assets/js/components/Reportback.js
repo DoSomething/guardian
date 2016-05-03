@@ -5,27 +5,29 @@ import ReactFireMixin from 'reactfire';
 import MemberSummary from './MemberSummary';
 import NavLink from './NavLink';
 import Helpers from '../utils/Helpers.js';
-import ReportbackItem from './ReportbackItem';
+import Media from './Media';
 import ReportbackStatusIcon from './ReportbackStatusIcon';
 
 export default React.createClass({
   componentWillMount: function() {
     var firebaseRef = new Firebase(Helpers.firebaseUrl());
-    if (this.isValidReportback()) {
+    if (Helpers.isValidKey(this.props.reportbackId)) {
       var url = "reportbacks/" + this.props.reportbackId;
       this.bindAsObject(firebaseRef.child(url), "reportback");
       this.bindAsArray(firebaseRef.child(url + "/reviews"), "reviews");
     }
   },
-  isValidReportback: function() {
-    return !(this.props.reportbackId == ".key" || this.props.reportbackId == ".value");
+  getInitialState: function() {
+    return {
+      gallery: true
+    }
   },
   mixins: [ReactFireMixin],
   postReview: function(status) {
-    this.props.postReview(status);
+    Helpers.createReview(this.state.reportback.campaign, this.props.reportbackId, status, this.mediaId, this.state.gallery);
   },
   render: function() {
-    if (!this.isValidReportback() || !this.state.reportback) {
+    if (!Helpers.isValidKey(this.props.reportbackId) || !this.state.reportback) {
       return null;
     }
     var quantityLabel = "nouns verbed";
@@ -33,12 +35,13 @@ export default React.createClass({
       quantityLabel = this.props.campaign.reportback_info.noun + ' ' + this.props.campaign.reportback_info.verb;
     }
     var mediaIds = Object.keys(this.state.reportback.media);
+    this.mediaId = mediaIds[0];
     var prettyDateSubmitted = Helpers.formatTimestamp(this.state.reportback.submitted_at);
     var sidebar = null;
     if (this.props.reviewing) {
       sidebar = <ReviewForm 
-              postReview={this.postReview}
-              reportback={this.state.reportback} />;
+        postReview={this.postReview}
+        reportback={this.state.reportback} />;
     }
     else {
       sidebar = this.state.reviews.map(function(review) {
@@ -50,10 +53,12 @@ export default React.createClass({
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
-          <div className="col-md-8 reportback-gallery">
-            <ReportbackItem
-              mediaId={mediaIds[0]}
-            />
+          <div className="col-md-8 text-center">
+            <Media
+              mediaId={this.mediaId}
+              displayControls={true}
+              reviewing={this.props.reviewing} 
+              setGallery={this.setGallery} />
           </div>
           <div className="col-md-4">
             <MemberSummary
@@ -76,6 +81,9 @@ export default React.createClass({
       </div>
     );
   },
+  setGallery: function(saveValue) {
+    this.state.gallery = saveValue;
+  }
 });
 
 var ReviewSummary = React.createClass({

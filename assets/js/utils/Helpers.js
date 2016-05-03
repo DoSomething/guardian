@@ -20,7 +20,7 @@ let Helpers = {
       campaign: campaignId,
       caption: this.dummyText(),
       created_at: timestamp,
-      gallery: false,
+      gallery: true,
       reportback: reportbackId,
       type: "image",
       uri: this.dummyImageUrl(timestamp),
@@ -31,10 +31,11 @@ let Helpers = {
     firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
     return reportbackId;
   },
-  createReview: function(reportbackId, status) {
+  createReview: function(campaignId, reportbackId, status, mediaId, gallery) {
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
     var timestamp = new Date().getTime();
+    // Create a new review
     var newReviewRef = firebaseRef.child("reviews").push({
       reportback: reportbackId,
       created_at: timestamp,
@@ -42,8 +43,25 @@ let Helpers = {
       user: authData.uid,
     });
     var reviewId = newReviewRef.key();
+    // Join it to the Reportback
     firebaseRef.child("reportbacks/" + reportbackId + "/reviews/" + reviewId).set(true);
+    // Join it to the Reviewer
     firebaseRef.child("users/" + authData.uid + "/reviews/" + reviewId).set(true);
+    // Update the Reportback status
+    firebaseRef.child("reportbacks/" + reportbackId).update({
+      reviewed_at: new Date().getTime(),
+      status: status
+    });
+    // Update the Campaign queues
+    var campaignReportbacksRef = firebaseRef.child("campaigns/" + campaignId + "/reportbacks");
+    campaignReportbacksRef.child("pending").child(reportbackId).set(null);
+    campaignReportbacksRef.child("reviewed").child(reportbackId).set(true);
+    // Post to Campaign gallery
+    var galleryUrl = "campaigns/" + campaignId + "/media/gallery/" + mediaId;
+    if (!gallery) {
+      gallery = null;
+    }
+    firebaseRef.child(galleryUrl).set(gallery);
   },
   dummyImageUrl: function(timestamp) {
     var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
@@ -65,6 +83,12 @@ let Helpers = {
     var prettyDate = months[date.getUTCMonth()] + ' ' + date.getUTCDate() + ', ' + date.getUTCFullYear() + ' ' + date.toLocaleTimeString();
     return prettyDate;
   },
+  isValidKey(keyName) {
+    return !(keyName == ".key" || keyName == ".value");
+  },
+  trimText: function(string, length) {
+    return string.length > length ? string.substring(0, length - 3) + "..." : string.substring(0, length)
+  }
 }
 
 export default Helpers;

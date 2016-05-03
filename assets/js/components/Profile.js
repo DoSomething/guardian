@@ -3,6 +3,7 @@ import Firebase from 'firebase';
 import ReactFireMixin from 'reactfire';
 
 import Reportback from './Reportback';
+import ReportbackStatusIcon from './ReportbackStatusIcon';
 import Helpers from '../utils/Helpers';
 
 export default React.createClass({

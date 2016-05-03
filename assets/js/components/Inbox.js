@@ -55,16 +55,6 @@ export default React.createClass({
     };
   },
   mixins: [ReactFireMixin],
-  postReview: function(status) {
-    var reportbackId = this.state.selectedReportbackId;
-    Helpers.createReview(reportbackId, status);
-    this.firebaseRefs.reportbacks.child(reportbackId).update({
-      reviewed_at: new Date().getTime(),
-      status: status
-    });
-    this.firebaseRefs.inbox.child(reportbackId).set(null);
-    this.firebaseRefs.reviewed.child(reportbackId).set(true);
-  },
   render: function() {
     var content, controls = null
     var inboxCount = 0;
@@ -89,7 +79,6 @@ export default React.createClass({
             campaign={this.state.campaign}
             reportbackId={this.state.selectedReportbackId}
             reviewing={true}
-            postReview={this.postReview}
           />
         );  
         controls = (
