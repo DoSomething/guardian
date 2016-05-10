@@ -68,13 +68,6 @@ export default React.createClass({
     });
   },
   render() {
-    var content = this.props.children;
-    if (!this.state.email) {
-      content = (
-        <RegisterView 
-          createUser={this.createUser} />
-      );
-    }
     return (
       <div>
         <Navbar 
@@ -83,7 +76,7 @@ export default React.createClass({
           logoutUser={this.logoutUser} 
         />
         <div className="container">
-          {content}
+          {this.props.children}
         </div>
       </div>
     )
@@ -138,7 +131,11 @@ var Navbar = React.createClass({
             </a>
           </div>
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          {content}
+            <ul className="nav navbar-nav">
+              <NavItem to="/campaigns">Campaigns</NavItem>
+              <NavItem to="/members">Members</NavItem>
+            </ul>
+            {content}
           </div>
         </div>
       </nav>
@@ -150,10 +147,6 @@ var NavBarAuthenticated = React.createClass({
   render: function() {
     return (
       <div>
-        <ul className="nav navbar-nav">
-          <NavItem to="/campaigns">Campaigns</NavItem>
-          <NavItem to="/members">Members</NavItem>
-        </ul>
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
