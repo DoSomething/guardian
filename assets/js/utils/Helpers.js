@@ -64,7 +64,6 @@ let Helpers = {
     firebaseRef.child(galleryUrl).set(gallery);
   },
   createSignup: function(campaignId) {
-    console.log(campaignId);
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
     var timestamp = new Date().getTime();

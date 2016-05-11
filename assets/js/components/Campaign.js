@@ -10,11 +10,15 @@ import Media from './Media';
 
 export default React.createClass({
   componentWillMount: function() {
+    this.campaignId = this.props.params.campaignId;
     if (!this.props.children) {
-      this.fetchCampaign(this.props.params.campaignId);
+      this.fetchCampaign(this.campaignId);
       this.firebaseRef = new Firebase(Helpers.firebaseUrl());
-      var mediaGalleryUrl = "campaigns/" + this.props.params.campaignId + "/media/gallery";
+      var authData = this.firebaseRef.getAuth();
+      var mediaGalleryUrl = "campaigns/" + this.campaignId + "/media/gallery";
       this.bindAsObject(this.firebaseRef.child(mediaGalleryUrl), "gallery");
+      var signupsUrl = "users/" + authData.uid + "/campaigns/" + this.campaignId + "/signups";
+      this.bindAsArray(this.firebaseRef.child(signupsUrl), "authUserSignups");
     }
   },
   fetchCampaign: function(campaignId) {
@@ -65,15 +69,27 @@ export default React.createClass({
       });
     }
 
-    var signup = null;
-    var authData = this.firebaseRef.getAuth();
-    if (authData) {
-      signup = (
-        <div className="jumbotron text-center">
-          <button onClick={this.handleSignupClick} className="btn btn-primary btn-lg text-uppercase">Sign up</button>
-        </div>
-      );
+    var content = null;
+    if (this.state.authUserSignups) {
+       if (this.state.authUserSignups.length > 0) {
+        content = (
+          <div className="row">
+            <div className="col-md-12">
+            <h2>Your impact</h2>
+            <p>You haven't proved it yet!</p>
+            </div>
+          </div>
+        );
+      }
+      else {
+        content = (
+          <div className="jumbotron text-center">
+            <button onClick={this.handleSignupClick} className="btn btn-primary btn-lg text-uppercase">Sign up</button>
+          </div>
+        );
+      }     
     }
+
 
     return (
       <div className="container">
@@ -83,12 +99,12 @@ export default React.createClass({
 	      </div>
         <div className="row">
           <div className="col-md-12">
-          {signup}
+          {content}
           </div>
         </div>        
 	      <div className="row">
           <div className="col-md-12">
-            <h3>Our impact</h3>
+            <h2>Our impact</h2>
   	        {gallery}
           </div>
 	      </div>
