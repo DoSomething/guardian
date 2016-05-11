@@ -63,6 +63,30 @@ let Helpers = {
     }
     firebaseRef.child(galleryUrl).set(gallery);
   },
+  createUser: function(credentials) {
+    var self = this;
+    this.firebaseRef.createUser(credentials, function(error, userData) {
+      if (error) {
+        switch (error.code) {
+          case "EMAIL_TAKEN":
+            console.log("The new user account cannot be created because the email is already in use.");
+            break;
+          case "INVALID_EMAIL":
+            console.log("The specified email is not a valid email.");
+            break;
+          default:
+            console.log("Error creating user:", error);
+        }
+      } else {
+        self.authenticateUser(credentials);
+        self.firebaseRef.child("users").child(userData.uid).set({
+          name: credentials.name,
+          email: credentials.email,
+          avatar_uri: credentials.avatar_uri 
+        });
+      }
+    });
+  },
   dummyImageUrl: function(timestamp) {
     var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
     var randomCategory = categories[Math.round(Math.random()*categories.length)];

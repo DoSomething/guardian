@@ -32,30 +32,6 @@ export default React.createClass({
       });
     }
   },
-  createUser: function(credentials) {
-    var self = this;
-    this.firebaseRef.createUser(credentials, function(error, userData) {
-      if (error) {
-        switch (error.code) {
-          case "EMAIL_TAKEN":
-            console.log("The new user account cannot be created because the email is already in use.");
-            break;
-          case "INVALID_EMAIL":
-            console.log("The specified email is not a valid email.");
-            break;
-          default:
-            console.log("Error creating user:", error);
-        }
-      } else {
-        self.authenticateUser(credentials);
-        self.firebaseRef.child("users").child(userData.uid).set({
-          name: credentials.name,
-          email: credentials.email,
-          avatar_uri: credentials.avatar_uri 
-        });
-      }
-    });
-  },
   getInitialState() {
     return {
       email: null,
@@ -82,24 +58,6 @@ export default React.createClass({
     )
   }
 });
-
-var RegisterView = React.createClass({
-  render: function() {
-    return (
-      <div className="container">
-        <div className="page-header">
-          <img src="/images/logo.png" className="center-block" />
-          <h1 className="text-center">Register</h1>
-        </div>
-        <div className="row">
-          <div className="col-md-4 col-md-offset-4">
-            <RegisterForm createUser={this.props.createUser} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-})
 
 var Navbar = React.createClass({
   render: function() {
