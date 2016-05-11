@@ -153,22 +153,6 @@ var ReportbackForm = React.createClass({
 
     return (
       <div>
-        <div className="row">
-          <div className="col-md-12">
-            <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase pull-right">
-              <span className="glyphicon glyphicon-picture" />
-            </button>
-            <h3>Photos</h3>
-          </div>
-        </div>
-        <div className="row">
-          {media}
-        </div>
-        <div className="row">
-          <div className="col-md-12">
-            <h3>Your impact</h3>
-          </div>
-        </div>
         <form>
           <div className="form-group">
             <label>Why did you participate in this campaign?</label>
@@ -178,13 +162,25 @@ var ReportbackForm = React.createClass({
             <label>How many?</label>
             <input type="text" className="form-control" id="quantity" placeholder="Total number of nouns verbed" />
           </div>
-          <div className="checkbox">
-            <label>
-              <input type="checkbox" /> Allow in gallery 
-            </label>
+          <hr />
+          <div className="row">
+            <div className="col-md-12">
+              <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase pull-right">
+                <span className="glyphicon glyphicon-picture" />
+              </button>
+              <h4>Photos</h4>
+            </div>
+          </div>
+          <div className="row">
+            {media}
           </div>
           <div className="text-center">
-            <button type="submit" className="btn btn-primary text-uppercase">Submit for review</button>
+            <div className="checkbox">
+              <label>
+                <input type="checkbox" checked /> Allow photos in gallery 
+              </label>
+            </div>
+            <button type="submit" className="btn btn-primary btn-block text-uppercase">Submit for review</button>
           </div>
         </form>
       </div>
