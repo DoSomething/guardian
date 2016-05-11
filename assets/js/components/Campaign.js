@@ -75,8 +75,11 @@ export default React.createClass({
         content = (
           <div className="row">
             <div className="col-md-12">
-            <h2>Your impact</h2>
-            <p>You haven't proved it yet!</p>
+              <h2>Your impact</h2>
+              <p>You haven't proved it yet!</p>
+              <div className="jumbotron">
+                <ReportbackForm />
+              </div>
             </div>
           </div>
         );
@@ -111,4 +114,28 @@ export default React.createClass({
       </div>
     )
   },
-})
+});
+
+var ReportbackForm = React.createClass({
+  render: function() {
+    return (
+      <form>
+        <button type="submit" className="btn btn-default text-uppercase">Add photo</button>
+        <div className="form-group">
+          <label>Why did you participate in this campaign?</label>
+          <input type="text" className="form-control" id="quote" placeholder="Email" />
+        </div>
+        <div className="form-group">
+          <label>How many?</label>
+          <input type="text" className="form-control" id="quantity" placeholder="Total number of nouns verbed" />
+        </div>
+        <div className="checkbox">
+          <label>
+            <input type="checkbox" /> Allow in gallery 
+          </label>
+        </div>
+        <button type="submit" className="btn btn-primary text-uppercase">Submit for review</button>
+      </form>
+    );
+  }
+});
