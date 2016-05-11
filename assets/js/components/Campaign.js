@@ -35,22 +35,23 @@ export default React.createClass({
       gallery: [],
       galleryLoaded: false,
       campaign: null,
+      signup: false
     };
+  },
+  handleSignupClick: function() {
+    Helpers.createSignup(this.props.params.campaignId);
   },
   mixins: [ReactFireMixin],
   render: function() {
     if (!this.state || !this.state.campaignLoaded) {
       return <LoadingView title="Loading campaign..." />;
     }
-    var inboxUrl = '/campaigns/' + this.state.campaign.id + '/inbox';
-    var content;
-
+    var gallery;
     if (!this.state.gallery) {
-      content = <LoadingView title="Loading gallery..." />;
+      gallery = <LoadingView title="Loading gallery..." />;
     }
-    
     else {
-      content = Object.keys(this.state.gallery).reverse().map(function(mediaId) {
+      gallery = Object.keys(this.state.gallery).reverse().map(function(mediaId) {
         if (mediaId == ".key") {
           return null;
         }
@@ -64,15 +65,32 @@ export default React.createClass({
       });
     }
 
+    var signup = null;
+    var authData = this.firebaseRef.getAuth();
+    if (authData) {
+      signup = (
+        <div className="jumbotron text-center">
+          <button onClick={this.handleSignupClick} className="btn btn-primary btn-lg text-uppercase">Sign up</button>
+        </div>
+      );
+    }
+
     return (
       <div className="container">
 	      <div className="page-header">
-          <Link className="btn btn-primary pull-right" to={inboxUrl} role="button">Inbox</Link>
 	        <h1>{this.state.campaign.title}</h1>
 	        <p>{this.state.campaign.tagline}</p>
 	      </div>
+        <div className="row">
+          <div className="col-md-12">
+          {signup}
+          </div>
+        </div>        
 	      <div className="row">
-	        {content}
+          <div className="col-md-12">
+            <h3>Our impact</h3>
+  	        {gallery}
+          </div>
 	      </div>
       </div>
     )

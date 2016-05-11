@@ -63,6 +63,21 @@ let Helpers = {
     }
     firebaseRef.child(galleryUrl).set(gallery);
   },
+  createSignup: function(campaignId) {
+    console.log(campaignId);
+    var firebaseRef = new Firebase(this.firebaseUrl());
+    var authData = firebaseRef.getAuth();
+    var timestamp = new Date().getTime();
+
+    var newSignupRef = firebaseRef.child("signups").push({
+      campaign: campaignId,
+      submitted_at: timestamp,
+      user: authData.uid,
+    });
+    var signupId = newSignupRef.key();
+    // Join it to authenticated user
+    firebaseRef.child("users/" + authData.uid + "/campaigns/" + campaignId + "/signups/" + signupId).set(true);
+  },
   dummyImageUrl: function(timestamp) {
     var categories = ["abstract", "animals", "business", "cats", "city", "food", "nightlife", "people", "nature", "sports", "technics", "transport"];
     var randomCategory = categories[Math.round(Math.random()*categories.length)];
