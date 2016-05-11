@@ -17,8 +17,9 @@ export default React.createClass({
       var authData = this.firebaseRef.getAuth();
       var mediaGalleryUrl = "campaigns/" + this.campaignId + "/media/gallery";
       this.bindAsObject(this.firebaseRef.child(mediaGalleryUrl), "gallery");
-      var signupsUrl = "users/" + authData.uid + "/campaigns/" + this.campaignId + "/signups";
-      this.bindAsArray(this.firebaseRef.child(signupsUrl), "authUserSignups");
+      var authUserCampaignUrl = "users/" + authData.uid + "/campaigns/" + this.campaignId;
+      this.bindAsArray(this.firebaseRef.child(authUserCampaignUrl).child("signups"), "authUserSignups");
+      this.bindAsArray(this.firebaseRef.child(authUserCampaignUrl).child("media"), "authUserMedia");
     }
   },
   fetchCampaign: function(campaignId) {
@@ -60,7 +61,7 @@ export default React.createClass({
           return null;
         }
         return (
-          <div className="col-md-3 gallery">
+          <div className="col-md-3 gallery" key={mediaId}>
             <Media 
               key={mediaId}
               mediaId={mediaId} />
@@ -78,7 +79,7 @@ export default React.createClass({
               <h2>Your impact</h2>
               <p>You haven't proved it yet!</p>
               <div className="jumbotron">
-                <ReportbackForm />
+                <ReportbackForm campaignId={this.campaignId} />
               </div>
             </div>
           </div>
@@ -92,7 +93,6 @@ export default React.createClass({
         );
       }     
     }
-
 
     return (
       <div className="container">
@@ -117,10 +117,14 @@ export default React.createClass({
 });
 
 var ReportbackForm = React.createClass({
+  handleAddPhoto: function(e) {
+    e.preventDefault();
+    Helpers.createMedia(this.props.campaignId);
+  },
   render: function() {
     return (
       <form>
-        <button type="submit" className="btn btn-default text-uppercase">Add photo</button>
+        <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase">Add photo</button>
         <div className="form-group">
           <label>Why did you participate in this campaign?</label>
           <input type="text" className="form-control" id="quote" placeholder="Email" />

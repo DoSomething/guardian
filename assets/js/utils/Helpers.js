@@ -2,6 +2,22 @@ import Firebase from 'firebase';
 var loremIpsum = require('lorem-ipsum')
 
 let Helpers = {
+  createMedia: function(campaignId) {
+    var firebaseRef = new Firebase(this.firebaseUrl());
+    var authData = firebaseRef.getAuth();
+    var timestamp = new Date().getTime();
+    var newMediaRef = firebaseRef.child("media").push({
+      campaign: campaignId,
+      caption: this.dummyText(),
+      created_at: timestamp,
+      type: "image",
+      uri: this.dummyImageUrl(timestamp),
+      user: authData.uid,
+    });
+    var mediaId = newMediaRef.key();
+    firebaseRef.child("users").child(authData.uid).child("campaigns").child(campaignId).child("media").child(mediaId).set(true);
+    return mediaId;
+  },
   createReportback: function(campaignId) {
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
@@ -15,19 +31,6 @@ let Helpers = {
       user: authData.uid,
     });
     var reportbackId = newReportbackRef.key();
-
-    var newMediaRef = firebaseRef.child("media").push({
-      campaign: campaignId,
-      caption: this.dummyText(),
-      created_at: timestamp,
-      gallery: true,
-      reportback: reportbackId,
-      type: "image",
-      uri: this.dummyImageUrl(timestamp),
-      user: authData.uid,
-    });
-    var mediaId = newMediaRef.key();
-    firebaseRef.child("reportbacks/" + reportbackId + "/media/" + mediaId).set(true);
     firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
     return reportbackId;
   },
