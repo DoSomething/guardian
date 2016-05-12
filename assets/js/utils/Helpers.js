@@ -18,16 +18,17 @@ let Helpers = {
     firebaseRef.child("users").child(authData.uid).child("campaigns").child(campaignId).child("media").child(mediaId).set(true);
     return mediaId;
   },
-  createReportback: function(campaignId) {
+  createReportback: function(reportback) {
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
     var timestamp = new Date().getTime();
 
     var newReportbackRef = firebaseRef.child("reportbacks").push({
-      campaign: campaignId,
-      submitted_at: timestamp,
-      quantity: Math.round(Math.random()*4000) + 1,
+      quantity: reportback.quantity,
+      quote: reportback.quote,
+      signup: reportback.signup,
       status: "pending",
+      submitted_at: timestamp,
       user: authData.uid,
     });
     var reportbackId = newReportbackRef.key();
@@ -42,7 +43,7 @@ let Helpers = {
     var newReviewRef = firebaseRef.child("reviews").push({
       reportback: reportbackId,
       created_at: timestamp,
-      status: status,
+      status: "status",
       user: authData.uid,
     });
     var reviewId = newReviewRef.key();

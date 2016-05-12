@@ -19,6 +19,14 @@ export default React.createClass({
     e.preventDefault();
     Helpers.createMedia(this.props.campaignId);
   },
+  handleSubmit: function(refs) {
+    var reportback = {
+      quantity: refs.quantity.value,
+      quote: refs.quote.value,
+      signup: this.props.signupId
+    }
+    Helpers.createReportback(reportback);
+  },
   mixins: [ReactFireMixin],
   render: function() {
     var media = null;
@@ -48,11 +56,11 @@ export default React.createClass({
         <form>
           <div className="form-group">
             <label>Why did you participate in this campaign?</label>
-            <input type="text" className="form-control" id="quote" placeholder="60 char minimum" />
+            <input type="text" className="form-control" ref="quote" placeholder="60 char minimum" />
           </div>
           <div className="form-group">
             <label>How many?</label>
-            <input type="text" className="form-control" id="quantity" placeholder="Total number of nouns verbed" />
+            <input type="text" className="form-control" ref="quantity" placeholder="Total number of nouns verbed" />
           </div>
           <hr />
           <div className="row">
@@ -69,12 +77,14 @@ export default React.createClass({
           <div className="text-center">
             <div className="checkbox">
               <label>
-                <input type="checkbox" checked /> Allow photos in gallery 
+                <input type="checkbox" defaulthecked /> Allow photos in gallery 
               </label>
             </div>
-            <button type="submit" className="btn btn-primary btn-block text-uppercase">Submit for review</button>
           </div>
         </form>
+        <button type="submit" onClick={this.handleSubmit.bind(this, this.refs)} className="btn btn-primary btn-block text-uppercase">
+          Submit for review
+        </button>
       </div>
     );
   }

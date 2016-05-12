@@ -70,17 +70,20 @@ export default React.createClass({
         );
       });
     }
-
     var content = null;
     if (this.state.authUserSignups) {
        if (this.state.authUserSignups.length > 0) {
+        // Assume one signup for now but later we'll need the latest
+        var currentSignup = this.state.authUserSignups[0];
+        var signupId = currentSignup[".key"];
+        console.log(signupId);
         content = (
           <div className="row">
             <div className="col-md-12">
               <h2>Prove it</h2>
               <p>You haven't proved it yet!</p>
               <div className="well">
-                <ReportbackForm campaignId={this.campaignId} />
+                <ReportbackForm campaignId={this.campaignId} signupId={signupId} />
               </div>
             </div>
           </div>
