@@ -131,7 +131,7 @@ export default React.createClass({
           <div className="row">
             <div className="col-md-12">
               <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase pull-right">
-                <span className="glyphicon glyphicon-picture" />
+                <span className="glyphicon glyphicon-plus" />
               </button>
               <h4>Photos</h4>
             </div>
