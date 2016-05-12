@@ -2,7 +2,6 @@ import React from 'react';
 import Firebase from 'firebase';
 import ReactFireMixin from 'reactfire';
 
-
 import Helpers from '../utils/Helpers.js';
 import GalleryItem from './GalleryItem';
 import LoadingView from './LoadingView';
@@ -76,7 +75,7 @@ export default React.createClass({
     }
     var toolbarButtonLabel = <span className="glyphicon glyphicon-pencil" />;
     var toolbarTitle = <h4>{this.state.authUserSignup.total_quantity_entered} <small>nouns verbed</small></h4>;
-    var toolbarContent = <blockquote><small>{this.state.authUserSignup.quote}</small></blockquote>;
+    var toolbarContent = <p>{this.state.authUserSignup.quote}</p>;
 
     if (this.state.editing) {
       toolbarButtonLabel = <span className="glyphicon glyphicon-remove" />
