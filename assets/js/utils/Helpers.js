@@ -32,7 +32,12 @@ let Helpers = {
       user: authData.uid,
     });
     var reportbackId = newReportbackRef.key();
+    firebaseRef.child("signups").child(reportback.signup).update({
+      quote: reportback.quote, 
+      total_quantity_entered: reportback.quantity
+    });
     firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
+    firebaseRef.child("signups").child(reportback.signup).child("reportbacks").child(reportbackId).set(true);
     return reportbackId;
   },
   createReview: function(campaignId, reportbackId, status, mediaId, gallery) {

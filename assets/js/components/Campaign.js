@@ -76,7 +76,7 @@ export default React.createClass({
         // Assume one signup for now but later we'll need the latest
         var currentSignup = this.state.authUserSignups[0];
         var signupId = currentSignup[".key"];
-        console.log(signupId);
+
         content = (
           <div className="row">
             <div className="col-md-12">
