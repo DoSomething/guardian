@@ -81,7 +81,6 @@ export default React.createClass({
           <div className="row">
             <div className="col-md-12">
               <h2>Prove it</h2>
-              <p>You haven't proved it yet!</p>
               <div className="well">
                 <ReportbackForm campaignId={this.campaignId} signupId={signupId} />
               </div>

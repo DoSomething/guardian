@@ -25,6 +25,12 @@ export default React.createClass({
     e.preventDefault();
     Helpers.createMedia(this.props.campaignId);
   },
+  handleEditClick: function(e) {
+    e.preventDefault();
+    this.setState({
+      editing: !this.state.editing
+    });
+  },
   handleQuantityChange: function(event) {
     this.firebaseRefs.authUserSignup.update({
       total_quantity_entered: event.target.value,
@@ -68,12 +74,28 @@ export default React.createClass({
         );
       }
     }
+    var toolbarButtonLabel = "edit";
+    var toolbarTitle = <h4>{this.state.authUserSignup.total_quantity_entered} <small>nouns verbed</small></h4>;
+    var toolbarContent = <blockquote><small>{this.state.authUserSignup.quote}</small></blockquote>;
+
+    if (this.state.editing) {
+      toolbarButtonLabel = "cancel",
+      toolbarTitle = <h4>Edit submission</h4>;
+      toolbarContent = null;
+    }
+    var toolbar  = (
+      <div className="row">
+        <div className="col-md-12">
+          <button onClick={this.handleEditClick} className="pull-right btn btn-default btn-sm text-uppercase">{toolbarButtonLabel}</button>
+          {toolbarTitle}
+          {toolbarContent}
+        </div>
+      </div>
+    );
     if (!this.state.editing) {
-      return (
+      return  (
         <div>
-          <div className="row">
-            <button onClick={this.handleEditClick} className="btn btn-default btn-sm text-uppercase">edit</button>
-          </div>
+          {toolbar}
           <div className="row">
             {media}
           </div>
@@ -83,6 +105,7 @@ export default React.createClass({
 
     return (
       <div>
+        {toolbar}
         <form>
           <div className="form-group">
             <label>How many nouns have you verbed?</label>
