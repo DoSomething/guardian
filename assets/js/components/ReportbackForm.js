@@ -74,12 +74,12 @@ export default React.createClass({
         );
       }
     }
-    var toolbarButtonLabel = "edit";
+    var toolbarButtonLabel = <span className="glyphicon glyphicon-pencil" />;
     var toolbarTitle = <h4>{this.state.authUserSignup.total_quantity_entered} <small>nouns verbed</small></h4>;
     var toolbarContent = <blockquote><small>{this.state.authUserSignup.quote}</small></blockquote>;
 
     if (this.state.editing) {
-      toolbarButtonLabel = "cancel",
+      toolbarButtonLabel = <span className="glyphicon glyphicon-remove" />
       toolbarTitle = <h4>Edit submission</h4>;
       toolbarContent = null;
     }
