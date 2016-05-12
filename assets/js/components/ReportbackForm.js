@@ -14,22 +14,40 @@ export default React.createClass({
     var authData = this.firebaseRef.getAuth();
     var authUserCampaignUrl = "users/" + authData.uid + "/campaigns/" + this.props.campaignId;
     this.bindAsArray(this.firebaseRef.child(authUserCampaignUrl).child("media"), "authUserMedia");
+    this.bindAsObject(this.firebaseRef.child("signups").child(this.props.signupId), "authUserSignup");
+  },
+  getInitialState: function() {
+    return {
+      editing: true,
+    }
   },
   handleAddPhoto: function(e) {
     e.preventDefault();
     Helpers.createMedia(this.props.campaignId);
   },
-  handleSubmit: function(refs) {
-    var reportback = {
-      quantity: refs.quantity.value,
-      quote: refs.quote.value,
-      signup: this.props.signupId
-    }
-    Helpers.createReportback(reportback);
+  handleQuantityChange: function(event) {
+    this.firebaseRefs.authUserSignup.update({
+      total_quantity_entered: event.target.value,
+    })
+  },
+  handleQuoteChange: function(event) {
+    this.firebaseRefs.authUserSignup.update({
+      quote: event.target.value,
+    })
+  },
+  handleSubmit: function(e) {
+    e.preventDefault();
+    Helpers.createReportback(this.props.signupId, this.state.authUserSignup.total_quantity_entered, this.state.authUserSignup.quote);
+    this.setState({
+      editing: false
+    });
   },
   mixins: [ReactFireMixin],
   render: function() {
     var media = null;
+    if (!this.state.authUserSignup) {
+      return null;
+    }
 
     if (this.state.authUserMedia) {
       if (this.state.authUserMedia.length > 0) {
@@ -50,17 +68,41 @@ export default React.createClass({
         );
       }
     }
+    if (!this.state.editing) {
+      return (
+        <div>
+          <div className="row">
+            <button onClick={this.handleEditClick} className="btn btn-default btn-sm text-uppercase">edit</button>
+          </div>
+          <div className="row">
+            {media}
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div>
         <form>
           <div className="form-group">
-            <label>Why did you participate in this campaign?</label>
-            <input type="text" className="form-control" ref="quote" placeholder="60 char minimum" />
+            <label>How many nouns have you verbed?</label>
+            <input 
+              type="text"
+              value={this.state.authUserSignup.total_quantity_entered}
+              className="form-control"
+              ref="quantity"
+              onChange={this.handleQuantityChange}
+              placeholder="Total number of nouns verbed" />
           </div>
           <div className="form-group">
-            <label>How many?</label>
-            <input type="text" className="form-control" ref="quantity" placeholder="Total number of nouns verbed" />
+            <label>Why did you participate in this campaign?</label>
+            <input 
+              type="text"
+              value={this.state.authUserSignup.quote}
+              className="form-control"
+              ref="quote"
+              onChange={this.handleQuoteChange}
+              placeholder="Please write at least 60 characters" />
           </div>
           <hr />
           <div className="row">
@@ -81,10 +123,10 @@ export default React.createClass({
               </label>
             </div>
           </div>
+          <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
+            Submit for review
+          </button>
         </form>
-        <button type="submit" onClick={this.handleSubmit.bind(this, this.refs)} className="btn btn-primary btn-block text-uppercase">
-          Submit for review
-        </button>
       </div>
     );
   }

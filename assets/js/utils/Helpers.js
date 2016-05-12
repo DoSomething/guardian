@@ -18,26 +18,21 @@ let Helpers = {
     firebaseRef.child("users").child(authData.uid).child("campaigns").child(campaignId).child("media").child(mediaId).set(true);
     return mediaId;
   },
-  createReportback: function(reportback) {
+  createReportback: function(signupId, totalQuantityEntered, quote) {
     var firebaseRef = new Firebase(this.firebaseUrl());
     var authData = firebaseRef.getAuth();
     var timestamp = new Date().getTime();
-
     var newReportbackRef = firebaseRef.child("reportbacks").push({
-      quantity: reportback.quantity,
-      quote: reportback.quote,
-      signup: reportback.signup,
+      quantity: totalQuantityEntered,
+      quote: quote,
+      signup: signupId,
       status: "pending",
       submitted_at: timestamp,
       user: authData.uid,
     });
     var reportbackId = newReportbackRef.key();
-    firebaseRef.child("signups").child(reportback.signup).update({
-      quote: reportback.quote, 
-      total_quantity_entered: reportback.quantity
-    });
     firebaseRef.child("users/" + authData.uid + "/reportbacks/" + reportbackId).set(true);
-    firebaseRef.child("signups").child(reportback.signup).child("reportbacks").child(reportbackId).set(true);
+    firebaseRef.child("signups").child(signupId).child("reportbacks").child(reportbackId).set(true);
     return reportbackId;
   },
   createReview: function(campaignId, reportbackId, status, mediaId, gallery) {
