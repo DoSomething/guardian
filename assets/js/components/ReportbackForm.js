@@ -192,7 +192,7 @@ export default React.createClass({
         <small>Submitted on {Helpers.formatTimestamp(timestamp)}.</small>
         <blockquote>
           <p>{this.state.authUserSignup.total_quantity_entered} nouns verbed</p>
-          <small>4 <span className="glyphicon glyphicon-picture" /></small>
+          <small>{this.state.authUserMedia.length} <span className="glyphicon glyphicon-picture" /></small>
         </blockquote>
         <h5>Waiting for review</h5>
         <small>We'll let you know as soon as we give it a gander.</small>
