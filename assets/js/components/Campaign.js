@@ -76,17 +76,7 @@ export default React.createClass({
         // Assume one signup for now but later we'll need the latest
         var currentSignup = this.state.authUserSignups[0];
         var signupId = currentSignup[".key"];
-
-        content = (
-          <div className="row">
-            <div className="col-md-12">
-              <h2>Prove it</h2>
-              <div className="well">
-                <ReportbackForm campaignId={this.campaignId} signupId={signupId} />
-              </div>
-            </div>
-          </div>
-        );
+        content = <ReportbackForm campaignId={this.campaignId} signupId={signupId} />;
       }
       else {
         content = (
@@ -110,7 +100,6 @@ export default React.createClass({
         </div>        
 	      <div className="row">
           <div className="col-md-12">
-            <h2>Gallery</h2>
   	        {gallery}
           </div>
 	      </div>

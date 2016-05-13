@@ -6,6 +6,7 @@ import Helpers from '../utils/Helpers.js';
 import GalleryItem from './GalleryItem';
 import LoadingView from './LoadingView';
 import Media from './Media';
+import MemberSummary from './MemberSummary';
 
 export default React.createClass({
   componentWillMount: function() {
@@ -59,7 +60,7 @@ export default React.createClass({
         media = this.state.authUserMedia.map(function(media) {
           var mediaId = media[".key"];
           return (
-            <div className="col-md-3 gallery" key={mediaId}>
+            <div className="col-md-4 gallery" key={mediaId}>
               <Media 
                 key={mediaId}
                 mediaId={mediaId} />
@@ -103,52 +104,65 @@ export default React.createClass({
     }
 
     return (
-      <div>
-        {toolbar}
-        <form>
-          <div className="form-group">
-            <label>How many nouns have you verbed?</label>
-            <input 
-              type="text"
-              value={this.state.authUserSignup.total_quantity_entered}
-              className="form-control"
-              ref="quantity"
-              onChange={this.handleQuantityChange}
-              placeholder="Total number of nouns verbed" />
-          </div>
-          <div className="form-group">
-            <label>Why did you participate in this campaign?</label>
-            <input 
-              type="text"
-              value={this.state.authUserSignup.quote}
-              className="form-control"
-              ref="quote"
-              onChange={this.handleQuoteChange}
-              placeholder="Please write at least 60 characters" />
-          </div>
-          <hr />
-          <div className="row">
-            <div className="col-md-12">
-              <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase pull-right">
-                <span className="glyphicon glyphicon-plus" />
-              </button>
-              <h4>Photos</h4>
+      <div className="panel panel-default reportback">
+        <div className="panel-body row">
+          <div className="col-md-8">
+            <form>
+            <div className="form-group">
+              <label>How many nouns have you verbed?</label>
+              <input 
+                type="text"
+                value={this.state.authUserSignup.total_quantity_entered}
+                className="form-control"
+                ref="quantity"
+                onChange={this.handleQuantityChange}
+                placeholder="Total number of nouns verbed" />
             </div>
-          </div>
-          <div className="row">
+            <div className="form-group">
+              <label>Why did you participate in this campaign?</label>
+              <input 
+                type="text"
+                value={this.state.authUserSignup.quote}
+                className="form-control"
+                ref="quote"
+                onChange={this.handleQuoteChange}
+                placeholder="Please write at least 60 characters" />
+            </div>
+            </form>
+            <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase pull-right">
+              <span className="glyphicon glyphicon-plus" />
+            </button>
+            <h4>Photos</h4>
             {media}
           </div>
-          <div className="text-center">
-            <div className="checkbox">
-              <label>
-                <input type="checkbox" defaulthecked /> Allow photos in gallery 
-              </label>
+          <div className="col-md-4">
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <MemberSummary
+                  key={this.state.authUserSignup.user}
+                  displayAvatar={true}
+                  userId={this.state.authUserSignup.user}
+                />
+              </div>
+              <div className="panel-body">
+                <ul className="list-group">
+                  <li className="list-group-item">
+                    <small>Signed up on {Helpers.formatTimestamp(this.state.authUserSignup.submitted_at)}.</small>
+                  </li>
+                  <li className="list-group-item">
+                    <p>When you've completed the action, report back!</p>
+                    <small>Our team of Reviewers review all submissions, and we feature our favorites in the gallery.</small>
+                  </li>
+                  <li className="list-group-item">
+                    <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
+                      Submit for review
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-          <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
-            Submit for review
-          </button>
-        </form>
+        </div>
       </div>
     );
   }
