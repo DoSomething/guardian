@@ -7,6 +7,7 @@ import GalleryItem from './GalleryItem';
 import LoadingView from './LoadingView';
 import Media from './Media';
 import MemberSummary from './MemberSummary';
+import ReportbackStatusIcon from './ReportbackStatusIcon';
 
 export default React.createClass({
   componentWillMount: function() {
@@ -125,7 +126,13 @@ export default React.createClass({
                     <small>Signed up on {Helpers.formatTimestamp(this.state.authUserSignup.submitted_at)}.</small>
                   </li>
                   <li className="list-group-item">
-                    {sidebar}
+                    {this.renderSubmittedBlock()}
+                  </li>
+                  <li className="list-group-item">
+                    {this.renderVerified()}
+                  </li>
+                  <li className="list-group-item">
+                    {this.renderSubmitForm()}
                   </li>
                 </ul>
               </div>
@@ -139,7 +146,7 @@ export default React.createClass({
     return (
       <form>
         <div className="form-group">
-          <label>How many nouns have you verbed?</label>
+          <label>We've got you down for 20 nouns verbed so far.<br />How many more nouns have you verbed?</label>
           <input 
             type="text"
             value={this.state.authUserSignup.total_quantity_entered}
@@ -147,16 +154,6 @@ export default React.createClass({
             ref="quantity"
             onChange={this.handleQuantityChange}
             placeholder="Total number of nouns verbed" />
-        </div>
-        <div className="form-group">
-          <label>Why did you participate in this campaign?</label>
-          <input 
-            type="text"
-            value={this.state.authUserSignup.quote}
-            className="form-control"
-            ref="quote"
-            onChange={this.handleQuoteChange}
-            placeholder="Please write at least 60 characters" />
         </div>
         <div className="text-center">
         <button onClick={this.handleAddPhoto} className="btn btn-default btn-lg">
@@ -174,14 +171,31 @@ export default React.createClass({
       </div>
     );
   },
+  renderEditSubmissionForm: function() {
+    render (
+    );
+  },
   renderSubmitForm: function() {
     return (
       <div>
-        <p>When you've completed the action, report back!</p>
-        <p><small>We review all submissions, and feature our favorites in the gallery.</small></p>
         <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
-          Submit for review
+          Submit update for review
         </button>
+        <button type="submit" onClick={this.handleSubmit} className="btn btn-default btn-block text-uppercase">
+          Cancel
+        </button>
+      </div>
+    );
+  },
+  renderSubmittedBlock: function() {
+    var timestamp = new Date().getTime() - 7000;
+    return (
+      <div>
+        <small>Submitted on {Helpers.formatTimestamp(timestamp)}.</small>
+        <blockquote>
+          <p>20 nouns verbed</p>
+          <small>3 <span className="glyphicon glyphicon-picture" /></small>
+        </blockquote>
       </div>
     );
   },
@@ -189,14 +203,26 @@ export default React.createClass({
     var timestamp = new Date().getTime();
     return (
       <div>
-        <small>Submitted on {Helpers.formatTimestamp(timestamp)}.</small>
-        <blockquote>
-          <p>{this.state.authUserSignup.total_quantity_entered} nouns verbed</p>
-          <small>{this.state.authUserMedia.length} <span className="glyphicon glyphicon-picture" /></small>
-        </blockquote>
         <h5>Waiting for review</h5>
         <small>We'll let you know as soon as we give it a gander.</small>
         <button className="btn btn-default btn-block text-uppercase">Edit my submission</button>
+      </div>
+    );  
+  },
+  renderVerified: function() {
+    var timestamp = new Date().getTime();
+    return (
+      <div>
+        <ReportbackStatusIcon status="approved"/> <small>Verified by <a>Puppet</a> on {Helpers.formatTimestamp(timestamp)}.</small>
+        <blockquote><small>Looks great, Glenn!</small></blockquote>
+      </div>
+    );  
+  },
+  renderUpdate: function() {
+    return (
+      <div>
+        <button className="btn btn-default btn-block text-uppercase">Edit submission</button>
+        <button className="btn btn-primary btn-block text-uppercase">Prove it again</button>
       </div>
     );
   }
