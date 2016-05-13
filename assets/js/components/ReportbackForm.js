@@ -51,10 +51,87 @@ export default React.createClass({
   },
   mixins: [ReactFireMixin],
   render: function() {
-    var media = null;
     if (!this.state.authUserSignup) {
       return null;
     }
+    var verifiedCount = <p className="text-muted"><small><a href="#">200 verified</a></small></p>;
+    var verifiedIcon = <ReportbackStatusIcon status="approved"/>;
+    return (
+      <div className="panel panel-default reportback">
+        <div className="panel-body row">
+          <div className="col-md-4">
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <MemberSummary
+                  key={this.state.authUserSignup.user}
+                  displayAvatar={true}
+                  userId={this.state.authUserSignup.user}
+                />
+              </div>
+              <div className="panel-body">
+                <h3 className="text-uppercase">521 <small>nouns verbed</small></h3> 
+                {verifiedCount}
+                <p>{this.state.authUserSignup.quote}</p>
+                <hr />
+                <a href="#">Edit</a>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-8">
+            {this.renderTimeline()}
+          </div>
+        </div>
+      </div>
+    );
+  },
+
+  renderForm: function() {
+    return (
+      <form>
+        <div className="form-group">
+          <h3>Report back</h3>
+          <label>How many nouns have you verbed?</label>
+          <input 
+            type="text"
+            value={this.state.authUserSignup.total_quantity_entered}
+            className="form-control"
+            ref="quantity"
+            onChange={this.handleQuantityChange}
+            placeholder="Total number of nouns verbed" />
+        </div>
+        <div className="form-group">
+          <label>Why did you participate in this campaign?</label>
+          <input 
+            type="text"
+            value={this.state.authUserSignup.quote}
+            className="form-control"
+            ref="quote"
+            onChange={this.handleQuoteChange}
+            placeholder="Please write at least 60 characters" />
+        </div>
+        <button onClick={this.handleAddPhoto} className="btn btn-default">
+          <span className="glyphicon glyphicon-plus" /> Add media
+        </button>
+        {this.renderReportbackMedia()}
+        <div className="row">
+          <div className="col-md-12">
+            <hr />
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" defaultChecked /> Permission to post my photos in gallery if selected
+              </label>
+            </div>
+            <p><small>We review all reportbacks, and feature our favorite photos in the gallery.</small></p>
+            <h1><button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
+              Submit for review
+            </button></h1>
+          </div>
+        </div>
+      </form>
+    );
+  },
+  renderReportbackMedia: function() {
+    var media = null;
 
     if (this.state.authUserMedia) {
       if (this.state.authUserMedia.length > 0) {
@@ -75,137 +152,41 @@ export default React.createClass({
         );
       }
     }
-    var toolbarButtonLabel = <span className="glyphicon glyphicon-pencil" />;
-    var toolbarTitle = <h4>{this.state.authUserSignup.total_quantity_entered} <small>nouns verbed</small></h4>;
-    var toolbarContent = <p>{this.state.authUserSignup.quote}</p>;
-
-    if (this.state.editing) {
-      toolbarButtonLabel = <span className="glyphicon glyphicon-remove" />
-      toolbarTitle = <h4>Edit submission</h4>;
-      toolbarContent = null;
-    }
-    var toolbar  = (
-      <div className="row">
-        <div className="col-md-12">
-          <button onClick={this.handleEditClick} className="pull-right btn btn-default btn-sm text-uppercase">{toolbarButtonLabel}</button>
-          {toolbarTitle}
-          {toolbarContent}
-        </div>
-      </div>
-    );
-
-    var content, sidebar;
-    if (this.state.editing) {
-      content = this.renderForm();
-      sidebar = this.renderSubmitForm();
-    }
-    else {
-      content = this.renderSubmitted();
-      sidebar = this.renderWaiting();
-    }
-
-    return (
-      <div className="panel panel-default reportback">
-        <div className="panel-body row">
-          <div className="col-md-8">
-            {content}
-            {media}
-          </div>
-          <div className="col-md-4">
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <MemberSummary
-                  key={this.state.authUserSignup.user}
-                  displayAvatar={true}
-                  userId={this.state.authUserSignup.user}
-                />
-              </div>
-              <div className="panel-body">
-                <ul className="list-group">
-                  <li className="list-group-item">
-                    <small>Signed up on {Helpers.formatTimestamp(this.state.authUserSignup.submitted_at)}.</small>
-                  </li>
-                  <li className="list-group-item">
-                    {this.renderSubmittedBlock()}
-                  </li>
-                  <li className="list-group-item">
-                    {this.renderVerified()}
-                  </li>
-                  <li className="list-group-item">
-                    {this.renderSubmitForm()}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="row">{media}</div>;
   },
-  renderForm: function() {
-    return (
-      <form>
-        <div className="form-group">
-          <label>We've got you down for 20 nouns verbed so far.<br />How many more nouns have you verbed?</label>
-          <input 
-            type="text"
-            value={this.state.authUserSignup.total_quantity_entered}
-            className="form-control"
-            ref="quantity"
-            onChange={this.handleQuantityChange}
-            placeholder="Total number of nouns verbed" />
-        </div>
-        <div className="text-center">
-        <button onClick={this.handleAddPhoto} className="btn btn-default btn-lg">
-          <span className="glyphicon glyphicon-plus" /> Add media
-        </button>
-        </div>
-      </form>
-    );
-  },
-  renderSubmitted: function() {
-    return (
-      <div>
-        <h2>{this.state.authUserSignup.total_quantity_entered} <small>nouns verbed</small></h2>
-        <p>{this.state.authUserSignup.quote}</p>
-      </div>
-    );
-  },
-  renderEditSubmissionForm: function() {
-    render (
-    );
-  },
-  renderSubmitForm: function() {
-    return (
-      <div>
-        <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
-          Submit update for review
-        </button>
-        <button type="submit" onClick={this.handleSubmit} className="btn btn-default btn-block text-uppercase">
-          Cancel
-        </button>
-      </div>
-    );
-  },
-  renderSubmittedBlock: function() {
+  renderSubmission: function(quantity, quote) {
     var timestamp = new Date().getTime() - 7000;
+    var submittedTime = Helpers.formatTimestamp(timestamp);
+    var blockquote = null;
+    if (quote) {
+      blockquote = <blockquote><small>{quote}</small></blockquote>;
+    }
     return (
       <div>
-        <small>Submitted on {Helpers.formatTimestamp(timestamp)}.</small>
-        <blockquote>
-          <p>20 nouns verbed</p>
-          <small>3 <span className="glyphicon glyphicon-picture" /></small>
-        </blockquote>
+        <small>You submitted <strong>{quantity} nouns verbed</strong> on {submittedTime}.</small>
+        {blockquote}
+        {this.renderReportbackMedia()}
       </div>
+    );
+  },
+  renderTimeline: function() {
+    return (
+      <ul className="list-group">
+        <li className="list-group-item">
+          {this.renderForm()}
+        </li>
+        <li className="list-group-item">
+          <small>You signed up for <strong>{this.props.campaignTitle}</strong> on {Helpers.formatTimestamp(this.state.authUserSignup.submitted_at)}.</small>
+        </li>
+      </ul>
     );
   },
   renderWaiting: function() {
     var timestamp = new Date().getTime();
     return (
       <div>
-        <h5>Waiting for review</h5>
-        <small>We'll let you know as soon as we give it a gander.</small>
-        <button className="btn btn-default btn-block text-uppercase">Edit my submission</button>
+        <h4>Your reportback is waiting for review.</h4>
+        <p>You'll receive a notification when we review it, but it might be a while -- this campaign is closed.</p> 
       </div>
     );  
   },
@@ -218,11 +199,12 @@ export default React.createClass({
       </div>
     );  
   },
-  renderUpdate: function() {
+  renderVerifiedControls: function() {
     return (
       <div>
-        <button className="btn btn-default btn-block text-uppercase">Edit submission</button>
-        <button className="btn btn-primary btn-block text-uppercase">Prove it again</button>
+        <h4>Rad reportback, Glenn.</h4>
+        <p>Keep it up!</p>
+        <button className="btn btn-primary text-uppercase">Verb more nouns</button>
       </div>
     );
   }
