@@ -90,7 +90,7 @@ export default React.createClass({
     return (
       <div className="container">
 	      <div className="page-header">
-	        <h1>Supermarket Stakeout</h1>
+	        <h1>{this.state.campaign.title}</h1>
 	        <p>{this.state.campaign.tagline}</p>
 	      </div>
         <div className="row">

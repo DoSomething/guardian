@@ -16,6 +16,8 @@ export default React.createClass({
     var authUserCampaignUrl = "users/" + authData.uid + "/campaigns/" + this.props.campaignId;
     this.bindAsArray(this.firebaseRef.child(authUserCampaignUrl).child("media"), "authUserMedia");
     this.bindAsObject(this.firebaseRef.child("signups").child(this.props.signupId), "authUserSignup");
+    this.noun = "jeans";
+    this.verb = "collected";
   },
   getInitialState: function() {
     return {
@@ -54,8 +56,10 @@ export default React.createClass({
     if (!this.state.authUserSignup) {
       return null;
     }
-    var verifiedCount = <p className="text-muted"><small><a href="#">200 verified</a></small></p>;
-    var verifiedIcon = <ReportbackStatusIcon status="approved"/>;
+    var verifiedCount, verifiedIcon = null;
+    var edit = <p><a href="#">Edit</a></p>;
+ //   var verifiedCount = <p className="text-muted"><small><a href="#">200 verified</a></small></p>;
+ //   var verifiedIcon = <ReportbackStatusIcon status="approved"/>;
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
@@ -69,11 +73,10 @@ export default React.createClass({
                 />
               </div>
               <div className="panel-body">
-                <h3 className="text-uppercase">521 <small>nouns verbed</small></h3> 
+                <h3 className="text-uppercase">200 <small>{this.noun} {this.verb}</small></h3> 
                 {verifiedCount}
                 <p>{this.state.authUserSignup.quote}</p>
-                <hr />
-                <a href="#">Edit</a>
+                {edit}
               </div>
             </div>
           </div>
@@ -84,20 +87,19 @@ export default React.createClass({
       </div>
     );
   },
-
   renderForm: function() {
     return (
       <form>
         <div className="form-group">
           <h3>Report back</h3>
-          <label>How many nouns have you verbed?</label>
+          <label>How many {this.noun} have you {this.verb} ?</label>
           <input 
             type="text"
             value={this.state.authUserSignup.total_quantity_entered}
             className="form-control"
             ref="quantity"
             onChange={this.handleQuantityChange}
-            placeholder="Total number of nouns verbed" />
+            placeholder="Enter a number" />
         </div>
         <div className="form-group">
           <label>Why did you participate in this campaign?</label>
@@ -107,7 +109,7 @@ export default React.createClass({
             className="form-control"
             ref="quote"
             onChange={this.handleQuoteChange}
-            placeholder="Please write at least 60 characters" />
+            placeholder="At least 60 characters" />
         </div>
         <button onClick={this.handleAddPhoto} className="btn btn-default">
           <span className="glyphicon glyphicon-plus" /> Add media
@@ -116,7 +118,7 @@ export default React.createClass({
         <div className="row">
           <div className="col-md-12">
             <hr />
-            <div class="checkbox">
+            <div className="checkbox">
               <label>
                 <input type="checkbox" defaultChecked /> Permission to post my photos in gallery if selected
               </label>
@@ -128,6 +130,34 @@ export default React.createClass({
           </div>
         </div>
       </form>
+    );
+  },
+  renderNeedsWork: function() {
+    var date = Helpers.formatTimestamp(new Date().getTime() - 7000);
+    return (
+      <div className="panel panel-warning">
+        <div className="panel-heading">
+          Needs werk
+        </div>
+        <div className="panel-body">
+        <p><small><strong>Puppet</strong> wrote on {date}:</small></p>
+        <p>Hey Glenn, that doesn't look like 1000 cans to me. Was that a typo? Do you have any other photos to help verify?</p> 
+        </div>
+      </div>
+    );
+  },
+  renderFlagged: function() {
+    var date = Helpers.formatTimestamp(new Date().getTime() - 7000);
+    return (
+      <div className="panel panel-danger">
+        <div className="panel-heading">
+          Flagged
+        </div>
+        <div className="panel-body">
+        <p><small><strong>Puppet</strong> wrote on {date}:</small></p>
+        <p>Hey Glenn, please don't send us DP's anymore. This is your last warning.</p> 
+        </div>
+      </div>
     );
   },
   renderReportbackMedia: function() {
@@ -173,7 +203,10 @@ export default React.createClass({
     return (
       <ul className="list-group">
         <li className="list-group-item">
-          {this.renderForm()}
+          {this.renderWaiting()}
+        </li>
+        <li className="list-group-item">
+          {this.renderSubmission(200, this.state.authUserSignup.why_participated)}
         </li>
         <li className="list-group-item">
           <small>You signed up for <strong>{this.props.campaignTitle}</strong> on {Helpers.formatTimestamp(this.state.authUserSignup.submitted_at)}.</small>
@@ -186,7 +219,8 @@ export default React.createClass({
     return (
       <div>
         <h4>Your reportback is waiting for review.</h4>
-        <p>You'll receive a notification when we review it, but it might be a while -- this campaign is closed.</p> 
+        <p>You'll receive a notification when we review it. </p>
+        {this.renderAddMoreForm()}
       </div>
     );  
   },
@@ -199,12 +233,50 @@ export default React.createClass({
       </div>
     );  
   },
+  renderAddMoreForm: function() {
+    var mediaId = "-KGcH4803VIWNP1e81ng";
+    return (
+      <form>
+        <div className="form-group">
+          <h3>Keep it up!</h3>
+          <label>Have you {this.verb} more {this.noun} ?</label>
+          <input 
+            type="text"
+            className="form-control"
+            ref="quantity"
+            onChange={this.handleQuantityChange}
+            placeholder="Enter a number" />
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+              <Media 
+                key={mediaId}
+                mediaId={mediaId} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <hr />
+            <div className="checkbox">
+              <label>
+                <input type="checkbox" defaultChecked /> Permission to post my photos in gallery if selected
+              </label>
+            </div>
+            <p><small>We review all reportbacks, and feature our favorite photos in the gallery.</small></p>
+            <h1><button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
+              Add to my submission
+            </button></h1>
+          </div>
+        </div>
+      </form>
+    );
+  },
   renderVerifiedControls: function() {
     return (
       <div>
         <h4>Rad reportback, Glenn.</h4>
         <p>Keep it up!</p>
-        <button className="btn btn-primary text-uppercase">Verb more nouns</button>
+        <button className="btn btn-primary text-uppercase">Collect more jeans</button>
       </div>
     );
   }

@@ -1,5 +1,6 @@
 body {
   padding-top: 50px;
+  font-family: 'Montserrat', sans-serif;
 }
 .navbar-custom {
     background-color:rgb(78, 43, 99);
@@ -18,7 +19,7 @@ body {
     color:#eeeeee;
 }
 h1, h2 {
-  font-size: 90%:;
+  font-size: 90%:
 }
 a, a:hover {
   text-decoration: none;
