@@ -92,47 +92,22 @@ export default React.createClass({
         </div>
       </div>
     );
-    if (!this.state.editing) {
-      return  (
-        <div>
-          {toolbar}
-          <div className="row">
-            {media}
-          </div>
-        </div>
-      );
+
+    var content, sidebar;
+    if (this.state.editing) {
+      content = this.renderForm();
+      sidebar = this.renderSubmitForm();
+    }
+    else {
+      content = this.renderSubmitted();
+      sidebar = this.renderWaiting();
     }
 
     return (
       <div className="panel panel-default reportback">
         <div className="panel-body row">
           <div className="col-md-8">
-            <form>
-            <div className="form-group">
-              <label>How many nouns have you verbed?</label>
-              <input 
-                type="text"
-                value={this.state.authUserSignup.total_quantity_entered}
-                className="form-control"
-                ref="quantity"
-                onChange={this.handleQuantityChange}
-                placeholder="Total number of nouns verbed" />
-            </div>
-            <div className="form-group">
-              <label>Why did you participate in this campaign?</label>
-              <input 
-                type="text"
-                value={this.state.authUserSignup.quote}
-                className="form-control"
-                ref="quote"
-                onChange={this.handleQuoteChange}
-                placeholder="Please write at least 60 characters" />
-            </div>
-            </form>
-            <button onClick={this.handleAddPhoto} className="btn btn-default text-uppercase pull-right">
-              <span className="glyphicon glyphicon-plus" />
-            </button>
-            <h4>Photos</h4>
+            {content}
             {media}
           </div>
           <div className="col-md-4">
@@ -150,13 +125,7 @@ export default React.createClass({
                     <small>Signed up on {Helpers.formatTimestamp(this.state.authUserSignup.submitted_at)}.</small>
                   </li>
                   <li className="list-group-item">
-                    <p>When you've completed the action, report back!</p>
-                    <small>Our team of Reviewers review all submissions, and we feature our favorites in the gallery.</small>
-                  </li>
-                  <li className="list-group-item">
-                    <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
-                      Submit for review
-                    </button>
+                    {sidebar}
                   </li>
                 </ul>
               </div>
@@ -165,5 +134,72 @@ export default React.createClass({
         </div>
       </div>
     );
+  },
+  renderForm: function() {
+    return (
+      <form>
+        <div className="form-group">
+          <label>How many nouns have you verbed?</label>
+          <input 
+            type="text"
+            value={this.state.authUserSignup.total_quantity_entered}
+            className="form-control"
+            ref="quantity"
+            onChange={this.handleQuantityChange}
+            placeholder="Total number of nouns verbed" />
+        </div>
+        <div className="form-group">
+          <label>Why did you participate in this campaign?</label>
+          <input 
+            type="text"
+            value={this.state.authUserSignup.quote}
+            className="form-control"
+            ref="quote"
+            onChange={this.handleQuoteChange}
+            placeholder="Please write at least 60 characters" />
+        </div>
+        <div className="text-center">
+        <button onClick={this.handleAddPhoto} className="btn btn-default btn-lg">
+          <span className="glyphicon glyphicon-plus" /> Add media
+        </button>
+        </div>
+      </form>
+    );
+  },
+  renderSubmitted: function() {
+    return (
+      <div>
+        <h2>{this.state.authUserSignup.total_quantity_entered} <small>nouns verbed</small></h2>
+        <p>{this.state.authUserSignup.quote}</p>
+      </div>
+    );
+  },
+  renderSubmitForm: function() {
+    return (
+      <div>
+        <p>When you've completed the action, report back!</p>
+        <p><small>We review all submissions, and feature our favorites in the gallery.</small></p>
+        <button type="submit" onClick={this.handleSubmit} className="btn btn-primary btn-block text-uppercase">
+          Submit for review
+        </button>
+      </div>
+    );
+  },
+  renderWaiting: function() {
+    var timestamp = new Date().getTime();
+    return (
+      <div>
+        <small>Submitted on {Helpers.formatTimestamp(timestamp)}.</small>
+        <blockquote>
+          <p>{this.state.authUserSignup.total_quantity_entered} nouns verbed</p>
+          <small>4 <span className="glyphicon glyphicon-picture" /></small>
+        </blockquote>
+        <h5>Waiting for review</h5>
+        <small>We'll let you know as soon as we give it a gander.</small>
+        <button className="btn btn-default btn-block text-uppercase">Edit my submission</button>
+      </div>
+    );
   }
 });
+
+
