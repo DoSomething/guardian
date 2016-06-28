@@ -137,11 +137,10 @@ export default React.createClass({
     return (
       <div className="panel panel-warning">
         <div className="panel-heading">
-          Needs werk
+          Needs work
         </div>
         <div className="panel-body">
         <p><small><strong>Puppet</strong> wrote on {date}:</small></p>
-        <p>Hey Glenn, that doesn't look like 1000 cans to me. Was that a typo? Do you have any other photos to help verify?</p> 
         </div>
       </div>
     );
@@ -202,9 +201,6 @@ export default React.createClass({
   renderTimeline: function() {
     return (
       <ul className="list-group">
-        <li className="list-group-item">
-          {this.renderWaiting()}
-        </li>
         <li className="list-group-item">
           {this.renderSubmission(200, this.state.authUserSignup.why_participated)}
         </li>
