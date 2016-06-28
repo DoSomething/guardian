@@ -175,11 +175,6 @@ export default React.createClass({
           );
         });
       }
-      else {
-        media = (
-          <div className="col-md-12 text-center"><p>You must upload at least one photo.</p></div>
-        );
-      }
     }
     return <div className="row">{media}</div>;
   },

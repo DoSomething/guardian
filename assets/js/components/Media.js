@@ -2,6 +2,8 @@ import React from 'react';;
 import Firebase from 'firebase';
 import ReactFireMixin from 'reactfire';
 
+
+import MemberSummary from './MemberSummary';
 import ReportbackStatusIcon from './ReportbackStatusIcon';
 import Helpers from '../utils/Helpers.js';
 
@@ -45,6 +47,10 @@ export default React.createClass({
           <img src={this.state.media.uri} className="img-responsive" />
           {controls}
           <h5 className="text-left caption">{caption}</h5>
+          <MemberSummary
+            displayAvatar={true}
+            key={this.state.media.user}
+            userId={this.state.media.user} />
         </button>
       </div>
     );

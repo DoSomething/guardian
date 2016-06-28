@@ -9,7 +9,8 @@ export default React.createClass({
         <div className="thumbnail gallery">
           <NavLink to={this.props.href}>
             <img src={this.props.imgSrc} className="img-responsive"/>
-            <h5 className="caption">{this.props.caption}</h5>
+            <h5 className="caption">{this.props.user}</h5>
+            <p>{this.props.user}</p>
           </NavLink>
         </div>
       </div>
