@@ -63,7 +63,8 @@ export default React.createClass({
         }
         return (
           <div className="col-md-3 gallery" key={mediaId}>
-            <Media 
+            <Media
+              displayMemberSummary={true}
               key={mediaId}
               mediaId={mediaId} />
           </div>

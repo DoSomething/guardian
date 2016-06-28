@@ -41,16 +41,20 @@ export default React.createClass({
     }
 
     var caption = Helpers.trimText(this.state.media.caption, 50);
+    var memberSummary = null;
+    if (this.props.displayMemberSummary) {
+      memberSummary = <MemberSummary
+            displayAvatar={true}
+            key={this.state.media.user}
+            userId={this.state.media.user} />;
+    }
     return (
       <div className="reportback-item" id={"media-" + this.props.mediaId} >
         <button disabled={!this.props.reviewing} onClick={this.toggleGallery}>
           <img src={this.state.media.uri} className="img-responsive" />
           {controls}
           <h5 className="text-left caption">{caption}</h5>
-          <MemberSummary
-            displayAvatar={true}
-            key={this.state.media.user}
-            userId={this.state.media.user} />
+          {memberSummary}
         </button>
       </div>
     );

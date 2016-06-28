@@ -91,7 +91,7 @@ export default React.createClass({
     return (
       <form>
         <div className="form-group">
-          <h3>Report back</h3>
+          <h3>Prove it</h3>
           <label>How many {this.noun} have you {this.verb} ?</label>
           <input 
             type="text"
@@ -196,6 +196,9 @@ export default React.createClass({
   renderTimeline: function() {
     return (
       <ul className="list-group">
+        <li className="list-group-item">
+          {this.renderForm()}
+        </li>
         <li className="list-group-item">
           {this.renderSubmission(200, this.state.authUserSignup.why_participated)}
         </li>
